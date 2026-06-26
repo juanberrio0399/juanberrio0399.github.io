@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Juan Berrio — Cloud &amp; Data Engineer</title>
+<meta name="description" content="Juan Berrio — Cloud & Data Engineer. Serverless data platforms, ETL pipelines and cloud dashboards. Building toward Cloud Architect." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#070b16; --bg2:#0b1120; --panel:#0f1729; --panel2:#131d33;
+    --line:#1e2a44; --txt:#e6edf7; --mut:#8aa0c2; --mut2:#64769a;
+    --cyan:#22d3ee; --blue:#3b82f6; --violet:#8b5cf6;
+    --grad:linear-gradient(120deg,#22d3ee,#3b82f6 55%,#8b5cf6);
+    --maxw:1080px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);
+    line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  h1,h2,h3,.mono{font-family:'Space Grotesk',sans-serif;letter-spacing:-.02em}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:rgba(34,211,238,.3)}
+  /* ---- bg glow ---- */
+  .glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(600px 400px at 80% -5%,rgba(59,130,246,.18),transparent 60%),
+      radial-gradient(500px 400px at 0% 10%,rgba(139,92,246,.14),transparent 60%),
+      radial-gradient(700px 500px at 50% 110%,rgba(34,211,238,.10),transparent 60%)}
+  #net{position:fixed;inset:0;z-index:0;opacity:.55}
+  .wrap{position:relative;z-index:2;max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  /* ---- nav ---- */
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;backdrop-filter:blur(12px);
+    background:rgba(7,11,22,.6);border-bottom:1px solid transparent;transition:.3s}
+  nav.scrolled{background:rgba(7,11,22,.85);border-bottom-color:var(--line)}
+  .nav-in{max-width:var(--maxw);margin:0 auto;padding:14px 24px;display:flex;
+    align-items:center;justify-content:space-between}
+  .logo{font-family:'Space Grotesk';font-weight:700;font-size:18px}
+  .logo b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .nav-links{display:flex;gap:26px;align-items:center}
+  .nav-links a{font-size:14px;color:var(--mut);font-weight:500;transition:.2s;position:relative}
+  .nav-links a:hover{color:var(--txt)}
+  .lang{display:flex;border:1px solid var(--line);border-radius:20px;overflow:hidden;font-size:12px}
+  .lang button{background:none;border:none;color:var(--mut);padding:5px 11px;cursor:pointer;
+    font-family:inherit;font-weight:600;transition:.2s}
+  .lang button.on{background:var(--grad);color:#06101f}
+  .burger{display:none;background:none;border:none;color:var(--txt);font-size:24px;cursor:pointer}
+  /* ---- hero ---- */
+  header{min-height:100vh;display:flex;align-items:center;padding:120px 0 80px;position:relative}
+  .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+    color:var(--cyan);border:1px solid var(--line);background:var(--panel);
+    padding:7px 14px;border-radius:30px;margin-bottom:26px}
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:#34d399;
+    box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:pulse 2s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}70%{box-shadow:0 0 0 9px rgba(52,211,153,0)}100%{box-shadow:0 0 0 0 rgba(52,211,153,0)}}
+  h1.name{font-size:clamp(44px,8vw,84px);font-weight:700;line-height:1.02;margin-bottom:14px}
+  h1.name span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .role{font-size:clamp(20px,3.4vw,30px);font-weight:600;font-family:'Space Grotesk';
+    color:var(--txt);min-height:1.3em;margin-bottom:20px}
+  .role .cursor{color:var(--cyan);font-weight:400;animation:blink 1s step-end infinite}
+  @keyframes blink{50%{opacity:0}}
+  .lead{font-size:clamp(16px,2vw,19px);color:var(--mut);max-width:640px;margin-bottom:34px}
+  .cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:46px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:12px;
+    font-weight:600;font-size:14px;transition:.25s;border:1px solid var(--line)}
+  .btn.primary{background:var(--grad);color:#06101f;border-color:transparent}
+  .btn.primary:hover{transform:translateY(-2px);box-shadow:0 12px 30px -8px rgba(34,211,238,.5)}
+  .btn.ghost{background:var(--panel);color:var(--txt)}
+  .btn.ghost:hover{border-color:var(--cyan);color:var(--cyan);transform:translateY(-2px)}
+  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;max-width:720px}
+  .stat .num{font-family:'Space Grotesk';font-weight:700;font-size:clamp(22px,3vw,30px);
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .lbl{font-size:12px;color:var(--mut2);margin-top:2px}
+  /* ---- sections ---- */
+  section{padding:90px 0;position:relative}
+  .tag{font-size:13px;font-weight:600;color:var(--cyan);text-transform:uppercase;
+    letter-spacing:.12em;margin-bottom:12px;display:block}
+  h2{font-size:clamp(28px,4.5vw,40px);font-weight:700;margin-bottom:18px}
+  .sub{color:var(--mut);max-width:620px;margin-bottom:46px;font-size:16px}
+  /* about */
+  .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:40px;align-items:start}
+  .about-grid p{color:var(--mut);margin-bottom:16px}
+  .about-grid p b{color:var(--txt)}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;transition:.3s}
+  .pillars li{list-style:none;display:flex;gap:12px;padding:10px 0;color:var(--mut);font-size:15px;
+    border-bottom:1px solid var(--line)}
+  .pillars li:last-child{border:none}
+  .pillars .ic{font-size:18px}
+  /* stack */
+  .stack{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .stack h3{font-size:15px;color:var(--cyan);margin-bottom:14px;font-family:'Inter';font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font-size:13px;background:var(--panel2);border:1px solid var(--line);color:var(--mut);
+    padding:6px 12px;border-radius:8px;transition:.2s;cursor:default}
+  .chip:hover{border-color:var(--cyan);color:var(--txt);transform:translateY(-2px)}
+  /* projects */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .proj{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px;
+    transition:.3s;position:relative;overflow:hidden}
+  .proj::before{content:'';position:absolute;inset:0;background:var(--grad);opacity:0;transition:.3s;
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;padding:1px;border-radius:16px}
+  .proj:hover{transform:translateY(-5px);border-color:transparent;background:var(--panel2)}
+  .proj:hover::before{opacity:.6}
+  .proj .pj-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .proj .emoji{font-size:26px}
+  .proj .badge{font-size:11px;color:var(--cyan);border:1px solid var(--line);padding:3px 9px;border-radius:20px}
+  .proj h3{font-size:19px;margin-bottom:8px}
+  .proj p{color:var(--mut);font-size:14.5px;margin-bottom:16px}
+  .proj .pj-tech{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+  .proj .pj-tech span{font-size:11.5px;color:var(--mut2);background:var(--bg2);padding:4px 9px;border-radius:6px}
+  .proj .links{display:flex;gap:14px;font-size:13px;font-weight:600}
+  .proj .links a{color:var(--cyan);transition:.2s}
+  .proj .links a:hover{opacity:.7}
+  /* architecture */
+  .arch{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:32px;overflow-x:auto}
+  .flow{display:flex;align-items:center;gap:10px;min-width:680px;justify-content:center}
+  .node{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+    text-align:center;min-width:120px;transition:.3s}
+  .node:hover{border-color:var(--cyan);transform:translateY(-3px)}
+  .node .ni{font-size:22px}
+  .node .nt{font-size:13px;font-weight:600;margin-top:6px}
+  .node .nd{font-size:11px;color:var(--mut2);margin-top:2px}
+  .arrow{color:var(--cyan);font-size:20px;flex-shrink:0;animation:slide 2s infinite}
+  @keyframes slide{0%,100%{transform:translateX(0);opacity:.5}50%{transform:translateX(4px);opacity:1}}
+  /* learning */
+  .learn{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+  .lrow{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px 20px}
+  .lrow .lh{display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:10px}
+  .lrow .lh span:last-child{color:var(--cyan);font-size:12px}
+  .bar{height:7px;background:var(--bg2);border-radius:10px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--grad);border-radius:10px;width:0;transition:width 1.4s ease}
+  /* contact */
+  .contact{text-align:center}
+  .contact h2{margin-bottom:14px}
+  .contact .sub{margin:0 auto 30px}
+  .clinks{display:flex;justify-content:center;flex-wrap:wrap;gap:14px}
+  footer{text-align:center;padding:40px 0;color:var(--mut2);font-size:13px;border-top:1px solid var(--line)}
+  /* reveal */
+  .rv{opacity:0;transform:translateY(28px);transition:.7s cubic-bezier(.2,.7,.2,1)}
+  .rv.in{opacity:1;transform:none}
+  /* responsive */
+  @media(max-width:860px){
+    .nav-links{position:fixed;inset:64px 0 auto 0;flex-direction:column;background:rgba(7,11,22,.97);
+      padding:24px;gap:18px;border-bottom:1px solid var(--line);transform:translateY(-120%);transition:.35s}
+    .nav-links.open{transform:none}
+    .burger{display:block}
+    .about-grid,.stack,.proj-grid,.learn{grid-template-columns:1fr}
+    .stats{grid-template-columns:repeat(2,1fr);gap:22px}
+  }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<canvas id="net"></canvas>
+
+<nav id="nav">
+  <div class="nav-in">
+    <div class="logo">Juan<b>.</b>Berrio</div>
+    <div class="nav-links" id="navlinks">
+      <a href="#about" data-en="About" data-es="Sobre mí">About</a>
+      <a href="#stack" data-en="Stack" data-es="Stack">Stack</a>
+      <a href="#projects" data-en="Projects" data-es="Proyectos">Projects</a>
+      <a href="#architecture" data-en="Architecture" data-es="Arquitectura">Architecture</a>
+      <a href="#contact" data-en="Contact" data-es="Contacto">Contact</a>
+      <div class="lang">
+        <button id="bEN" class="on" onclick="setLang('en')">EN</button>
+        <button id="bES" onclick="setLang('es')">ES</button>
+      </div>
+    </div>
+    <button class="burger" onclick="document.getElementById('navlinks').classList.toggle('open')">☰</button>
+  </div>
+</nav>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow rv"><span class="dot"></span><span data-en="Available for remote roles · Cloud / Data" data-es="Disponible para roles remotos · Cloud / Datos">Available for remote roles · Cloud / Data</span></div>
+    <h1 class="name rv">Juan <span>Berrio</span></h1>
+    <div class="role rv"><span id="typed"></span><span class="cursor">|</span></div>
+    <p class="lead rv" data-en="I turn messy, manual, Excel-driven processes into cloud systems that run themselves — serverless data platforms, ETL pipelines and dashboards that are reliable and cost almost nothing. Building toward Cloud Architect." data-es="Convierto procesos manuales y caóticos basados en Excel en sistemas cloud que se operan solos — plataformas de datos serverless, pipelines ETL y dashboards confiables que cuestan casi nada. En camino a Cloud Architect.">I turn messy, manual, Excel-driven processes into cloud systems that run themselves — serverless data platforms, ETL pipelines and dashboards that are reliable and cost almost nothing. Building toward Cloud Architect.</p>
+    <div class="cta rv">
+      <a class="btn primary" href="#projects" data-en="View projects ↓" data-es="Ver proyectos ↓">View projects ↓</a>
+      <a class="btn ghost" href="https://github.com/juanberrio0399/portfolio/raw/main/resume/CV_Juan_Berrio_EN.pdf" target="_blank" data-en="📄 Download CV" data-es="📄 Descargar CV">📄 Download CV</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/juanberrioo" target="_blank">in LinkedIn</a>
+      <a class="btn ghost" href="https://github.com/juanberrio0399" target="_blank">GitHub</a>
+    </div>
+    <div class="stats rv">
+      <div class="stat"><div class="num" data-count="6" data-suffix="+"></div><div class="lbl" data-en="years experience" data-es="años de experiencia">years experience</div></div>
+      <div class="stat"><div class="num" data-count="4100" data-suffix="+"></div><div class="lbl" data-en="lines · ETL pipeline" data-es="líneas · pipeline ETL">lines · ETL pipeline</div></div>
+      <div class="stat"><div class="num" data-count="3" data-suffix="×/day"></div><div class="lbl" data-en="automated runs" data-es="corridas automáticas">automated runs</div></div>
+      <div class="stat"><div class="num" data-count="0" data-prefix="~$"></div><div class="lbl" data-en="infra cost" data-es="costo de infra">infra cost</div></div>
+      <div class="stat"><div class="num" data-count="6"></div><div class="lbl" data-en="real projects" data-es="proyectos reales">real projects</div></div>
+    </div>
+  </div>
+</header>
+
+<section id="about">
+  <div class="wrap">
+    <span class="tag rv" data-en="01 — About" data-es="01 — Sobre mí">01 — About</span>
+    <h2 class="rv" data-en="Engineer who ships, not just reports" data-es="Ingeniero que construye, no solo reporta">Engineer who ships, not just reports</h2>
+    <div class="about-grid">
+      <div class="rv">
+        <p data-en="Hi! I'm Juan, a Cloud &amp; Data Engineer from Bogotá 🇨🇴 with 6+ years of experience. I don't just report the past — I <b>design the cloud platforms that produce and serve the data</b>." data-es="¡Hola! Soy Juan, ingeniero Cloud &amp; Datos de Bogotá 🇨🇴 con 6+ años de experiencia. No solo reporto el pasado — <b>diseño las plataformas en la nube que producen y sirven los datos</b>.">Hi! I'm Juan, a Cloud &amp; Data Engineer from Bogotá 🇨🇴 with 6+ years of experience. I don't just report the past — I <b>design the cloud platforms that produce and serve the data</b>.</p>
+        <p data-en="My current project incrementally ingests an international courier's Excel files, consolidates them into a DuckDB warehouse, and publishes a serverless dashboard (Cloudflare + React + DuckDB-WASM) that updates itself three times a day — with no server to maintain and <b>~$0 infrastructure</b>." data-es="Mi proyecto actual ingiere de forma incremental los Excel de un courier internacional, los consolida en un warehouse DuckDB y publica un dashboard serverless (Cloudflare + React + DuckDB-WASM) que se actualiza solo tres veces al día — sin servidor que mantener y con <b>~$0 de infraestructura</b>.">My current project incrementally ingests an international courier's Excel files, consolidates them into a DuckDB warehouse, and publishes a serverless dashboard (Cloudflare + React + DuckDB-WASM) that updates itself three times a day — with no server to maintain and <b>~$0 infrastructure</b>.</p>
+        <p data-en="I'm currently leveling up on <b>AWS</b> and <b>Systems Engineering</b>, on the path to Cloud Solutions Architect." data-es="Actualmente subo de nivel en <b>AWS</b> e <b>Ingeniería de Sistemas</b>, en camino a Arquitecto de Soluciones Cloud.">I'm currently leveling up on <b>AWS</b> and <b>Systems Engineering</b>, on the path to Cloud Solutions Architect.</p>
+      </div>
+      <div class="card rv">
+        <ul class="pillars">
+          <li><span class="ic">☁️</span><span data-en="Architecture mindset: compute / storage / presentation, decoupled" data-es="Mentalidad de arquitectura: cómputo / almacenamiento / presentación, desacoplados">Architecture mindset: compute / storage / presentation, decoupled</span></li>
+          <li><span class="ic">⚡</span><span data-en="Serverless &amp; cost-obsessed (~$0 infra)" data-es="Serverless y obsesionado con el costo (~$0 infra)">Serverless &amp; cost-obsessed (~$0 infra)</span></li>
+          <li><span class="ic">🔄</span><span data-en="Production automation that runs unattended" data-es="Automatización en producción que corre sola">Production automation that runs unattended</span></li>
+          <li><span class="ic">🤖</span><span data-en="AI / LLM integration &amp; prompt engineering" data-es="Integración de IA / LLM y prompt engineering">AI / LLM integration &amp; prompt engineering</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <span class="tag rv" data-en="02 — Tech stack" data-es="02 — Stack">02 — Tech stack</span>
+    <h2 class="rv" data-en="Tools I build with" data-es="Herramientas con las que construyo">Tools I build with</h2>
+    <div class="stack">
+      <div class="card rv"><h3>☁️ Cloud &amp; DevOps</h3><div class="chips">
+        <span class="chip">Cloudflare R2</span><span class="chip">Cloudflare Pages</span><span class="chip">Workers</span>
+        <span class="chip">Serverless</span><span class="chip">GitHub Actions</span><span class="chip">Git</span><span class="chip">AWS · learning</span></div></div>
+      <div class="card rv"><h3>🦆 Data Engineering</h3><div class="chips">
+        <span class="chip">Python</span><span class="chip">Pandas</span><span class="chip">DuckDB</span><span class="chip">Parquet</span>
+        <span class="chip">SQL</span><span class="chip">ETL</span><span class="chip">Data Warehousing</span><span class="chip">Dimensional Modeling</span></div></div>
+      <div class="card rv"><h3>📊 BI &amp; Web</h3><div class="chips">
+        <span class="chip">Power BI</span><span class="chip">Power Query</span><span class="chip">React</span>
+        <span class="chip">TypeScript</span><span class="chip">DuckDB-WASM</span></div></div>
+      <div class="card rv"><h3>🤖 AI &amp; Automation</h3><div class="chips">
+        <span class="chip">LLM Integration</span><span class="chip">Prompt Engineering</span><span class="chip">Playwright (RPA)</span>
+        <span class="chip">Power Automate</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <span class="tag rv" data-en="03 — Projects" data-es="03 — Proyectos">03 — Projects</span>
+    <h2 class="rv" data-en="Things I've built" data-es="Cosas que he construido">Things I've built</h2>
+    <p class="sub rv" data-en="Most repos are private (client work). Full write-ups with architecture &amp; results live in my portfolio." data-es="La mayoría de repos son privados (trabajo de cliente). Los write-ups con arquitectura y resultados están en mi portafolio.">Most repos are private (client work). Full write-ups with architecture &amp; results live in my portfolio.</p>
+    <div class="proj-grid">
+
+      <div class="proj rv">
+        <div class="pj-top"><span class="emoji">☁️</span><span class="badge" data-en="Production" data-es="Producción">Production</span></div>
+        <h3>DataForge Cloud</h3>
+        <p data-en="Serverless analytics platform. A local ETL worker publishes to Cloudflare R2; a dashboard (Pages + React + DuckDB-WASM) queries Parquet directly in the browser — no backend, ~$0 infra." data-es="Plataforma de analítica serverless. Un worker ETL local publica en Cloudflare R2; un dashboard (Pages + React + DuckDB-WASM) consulta Parquet directo en el navegador — sin backend, ~$0 infra.">Serverless analytics platform. A local ETL worker publishes to Cloudflare R2; a dashboard (Pages + React + DuckDB-WASM) queries Parquet directly in the browser — no backend, ~$0 infra.</p>
+        <div class="pj-tech"><span>Cloudflare R2/Pages</span><span>React</span><span>DuckDB-WASM</span><span>GitHub Actions</span></div>
+        <div class="links"><a href="https://github.com/juanberrio0399/portfolio/blob/main/case-studies/01-dataforge-customs-reconciliation_EN.md" target="_blank" data-en="Case study →" data-es="Case study →">Case study →</a></div>
+      </div>
+
+      <div class="proj rv">
+        <div class="pj-top"><span class="emoji">🦆</span><span class="badge" data-en="Production" data-es="Producción">Production</span></div>
+        <h3>DataForge</h3>
+        <p data-en="ETL pipeline (~4,100 lines) that incrementally ingests Excel into Parquet and exposes a DuckDB warehouse. Package-level tax reconciliation across 5 sources. Runs unattended 3×/day." data-es="Pipeline ETL (~4.100 líneas) que ingiere Excel de forma incremental a Parquet y expone un warehouse DuckDB. Conciliación tributaria guía-a-guía sobre 5 fuentes. Corre solo 3×/día.">ETL pipeline (~4,100 lines) that incrementally ingests Excel into Parquet and exposes a DuckDB warehouse. Package-level tax reconciliation across 5 sources. Runs unattended 3×/day.</p>
+        <div class="pj-tech"><span>Python</span><span>Pandas</span><span>DuckDB</span><span>Parquet</span></div>
+        <div class="links"><a href="https://github.com/juanberrio0399/portfolio/blob/main/projects/dataforge/README.md" target="_blank" data-en="Overview →" data-es="Detalle →">Overview →</a></div>
+      </div>
+
+      <div class="proj rv">
+        <div class="pj-top"><span class="emoji">🛡️</span><span class="badge">Web app</span></div>
+        <h3>UGPP Shield Pro</h3>
+        <p data-en="Cloud web app aimed at CFOs for fiscal &amp; compliance intelligence, deployed on Cloudflare Pages." data-es="Web app cloud orientada a CFOs para inteligencia fiscal y de cumplimiento, desplegada en Cloudflare Pages.">Cloud web app aimed at CFOs for fiscal &amp; compliance intelligence, deployed on Cloudflare Pages.</p>
+        <div class="pj-tech"><span>JavaScript</span><span>Vite</span><span>Cloudflare Pages</span></div>
+      </div>
+
+      <div class="proj rv">
+        <div class="pj-top"><span class="emoji">🤖</span><span class="badge">AI</span></div>
+        <h3>Oportunia</h3>
+        <p data-en="A personal system that finds and qualifies freelance opportunities using AI / LLMs." data-es="Sistema personal que encuentra y califica oportunidades freelance usando IA / LLMs.">A personal system that finds and qualifies freelance opportunities using AI / LLMs.</p>
+        <div class="pj-tech"><span>Python</span><span>AI / LLM</span></div>
+      </div>
+
+      <div class="proj rv">
+        <div class="pj-top"><span class="emoji">⚙️</span><span class="badge">RPA</span></div>
+        <h3>TEMU Automation</h3>
+        <p data-en="A Playwright bot that uploads/downloads documents to a logistics portal, matching records by business rules — killing repetitive manual work." data-es="Un bot Playwright que sube/descarga documentos a un portal logístico, emparejando registros por reglas de negocio — elimina trabajo manual repetitivo.">A Playwright bot that uploads/downloads documents to a logistics portal, matching records by business rules — killing repetitive manual work.</p>
+        <div class="pj-tech"><span>Python</span><span>Playwright</span></div>
+      </div>
+
+      <div class="proj rv">
+        <div class="pj-top"><span class="emoji">🎮</span><span class="badge" data-en="Side project" data-es="Side project">Side project</span></div>
+        <h3>Hearthwood</h3>
+        <p data-en="A cooperative survival game built from scratch by phases — client-server architecture across ~23 services. Systems design beyond data." data-es="Juego cooperativo de supervivencia hecho desde cero por fases — arquitectura cliente-servidor en ~23 servicios. Diseño de sistemas más allá de datos.">A cooperative survival game built from scratch by phases — client-server architecture across ~23 services. Systems design beyond data.</p>
+        <div class="pj-tech"><span>Luau</span><span>Roblox</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="architecture">
+  <div class="wrap">
+    <span class="tag rv" data-en="04 — How it works" data-es="04 — Cómo funciona">04 — How it works</span>
+    <h2 class="rv" data-en="DataForge data flow" data-es="Flujo de datos de DataForge">DataForge data flow</h2>
+    <p class="sub rv" data-en="From the business's Excel files to a self-updating cloud dashboard — fully automated." data-es="De los Excel del negocio a un dashboard cloud que se actualiza solo — totalmente automatizado.">From the business's Excel files to a self-updating cloud dashboard — fully automated.</p>
+    <div class="arch rv">
+      <div class="flow">
+        <div class="node"><div class="ni">📑</div><div class="nt">Excel</div><div class="nd">SharePoint</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="ni">🐍</div><div class="nt">ETL</div><div class="nd">Python · incremental</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="ni">🦆</div><div class="nt">Warehouse</div><div class="nd">DuckDB · Parquet</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="ni">☁️</div><div class="nt">R2</div><div class="nd">Cloudflare</div></div>
+        <div class="arrow">→</div>
+        <div class="node"><div class="ni">📊</div><div class="nt">Dashboard</div><div class="nd">React · DuckDB-WASM</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="learning">
+  <div class="wrap">
+    <span class="tag rv" data-en="05 — Growth" data-es="05 — Crecimiento">05 — Growth</span>
+    <h2 class="rv" data-en="Currently learning" data-es="Aprendiendo ahora">Currently learning</h2>
+    <p class="sub rv" data-en="On the road to Cloud Solutions Architect." data-es="En camino a Arquitecto de Soluciones Cloud.">On the road to Cloud Solutions Architect.</p>
+    <div class="learn">
+      <div class="lrow rv"><div class="lh"><span>AWS · Cloud Practitioner → SAA</span><span data-en="in progress" data-es="en curso">in progress</span></div><div class="bar"><i data-w="45"></i></div></div>
+      <div class="lrow rv"><div class="lh"><span>Systems Engineering · Uniminuto</span><span data-en="ongoing" data-es="en curso">ongoing</span></div><div class="bar"><i data-w="60"></i></div></div>
+      <div class="lrow rv"><div class="lh"><span>English → B2</span><span data-en="in progress" data-es="en curso">in progress</span></div><div class="bar"><i data-w="40"></i></div></div>
+      <div class="lrow rv"><div class="lh"><span>dbt · Analytics Engineering</span><span data-en="starting" data-es="iniciando">starting</span></div><div class="bar"><i data-w="20"></i></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact">
+  <div class="wrap">
+    <span class="tag rv" data-en="06 — Contact" data-es="06 — Contacto">06 — Contact</span>
+    <h2 class="rv" data-en="Let's build something that scales" data-es="Construyamos algo que escale">Let's build something that scales</h2>
+    <p class="sub rv" data-en="Open to remote Cloud / Data Engineering roles and consulting projects." data-es="Abierto a roles remotos de Cloud / Data Engineering y proyectos de consultoría.">Open to remote Cloud / Data Engineering roles and consulting projects.</p>
+    <div class="clinks rv">
+      <a class="btn primary" href="mailto:juandyb99@gmail.com">✉ juandyb99@gmail.com</a>
+      <a class="btn ghost" href="https://www.linkedin.com/in/juanberrioo" target="_blank">in LinkedIn</a>
+      <a class="btn ghost" href="https://github.com/juanberrio0399" target="_blank">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">© <span id="yr"></span> Juan Berrio · Cloud &amp; Data Engineer · Bogotá, Colombia 🇨🇴</div>
+</footer>
+
+<script>
+/* ---------- language ---------- */
+function setLang(l){
+  document.documentElement.lang=l;
+  document.querySelectorAll('[data-en]').forEach(function(el){
+    var v=el.getAttribute('data-'+l); if(v!==null) el.innerHTML=v;
+  });
+  document.getElementById('bEN').classList.toggle('on',l==='en');
+  document.getElementById('bES').classList.toggle('on',l==='es');
+  try{localStorage.setItem('lang',l);}catch(e){}
+  buildTyped();
+}
+/* ---------- typewriter ---------- */
+var ROLES={en:['Cloud & Data Engineer','Serverless architecture','ETL & data pipelines','Building toward Cloud Architect ☁️'],
+           es:['Ingeniero Cloud & Datos','Arquitectura serverless','Pipelines de datos & ETL','En camino a Cloud Architect ☁️']};
+var tIdx=0,cIdx=0,del=false,curLang='en',tTimer;
+function buildTyped(){curLang=document.documentElement.lang;tIdx=0;cIdx=0;del=false;}
+function typeLoop(){
+  var arr=ROLES[curLang]||ROLES.en, word=arr[tIdx%arr.length];
+  cIdx+=del?-1:1;
+  document.getElementById('typed').textContent=word.slice(0,cIdx);
+  var spd=del?40:80;
+  if(!del&&cIdx===word.length){spd=1600;del=true;}
+  else if(del&&cIdx===0){del=false;tIdx++;spd=300;}
+  clearTimeout(tTimer);tTimer=setTimeout(typeLoop,spd);
+}
+/* ---------- reveal + counters + bars ---------- */
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      if(e.target.classList.contains('stats')) e.target.querySelectorAll('[data-count]').forEach(countUp);
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.18});
+document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+function countUp(el){
+  var end=+el.getAttribute('data-count'),pre=el.getAttribute('data-prefix')||'',suf=el.getAttribute('data-suffix')||'',
+      t0=null,dur=1300;
+  function step(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/dur,1),val=Math.floor((1-Math.pow(1-p,3))*end);
+    el.textContent=pre+val.toLocaleString()+suf;if(p<1)requestAnimationFrame(step);}
+  requestAnimationFrame(step);
+}
+var bio=new IntersectionObserver(function(es){es.forEach(function(e){
+  if(e.isIntersecting){var i=e.target.querySelector('i[data-w]');if(i)i.style.width=i.getAttribute('data-w')+'%';bio.unobserve(e.target);}
+});},{threshold:.4});
+document.querySelectorAll('.lrow').forEach(function(el){bio.observe(el);});
+/* ---------- nav ---------- */
+window.addEventListener('scroll',function(){document.getElementById('nav').classList.toggle('scrolled',scrollY>40);});
+document.querySelectorAll('#navlinks a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('navlinks').classList.remove('open');});});
+document.getElementById('yr').textContent=new Date().getFullYear();
+/* ---------- canvas network ---------- */
+(function(){
+  var c=document.getElementById('net'),x=c.getContext('2d'),pts=[],W,H,DPR=Math.min(devicePixelRatio||1,2);
+  function size(){W=c.width=innerWidth*DPR;H=c.height=innerHeight*DPR;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';
+    var n=Math.min(70,Math.floor(innerWidth/20));pts=[];for(var i=0;i<n;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3*DPR,vy:(Math.random()-.5)*.3*DPR});}
+  size();addEventListener('resize',size);
+  function draw(){
+    x.clearRect(0,0,W,H);
+    for(var i=0;i<pts.length;i++){var p=pts[i];p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;
+      x.beginPath();x.arc(p.x,p.y,1.6*DPR,0,7);x.fillStyle='rgba(34,211,238,.7)';x.fill();
+      for(var j=i+1;j<pts.length;j++){var q=pts[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy),max=130*DPR;
+        if(d<max){x.beginPath();x.moveTo(p.x,p.y);x.lineTo(q.x,q.y);
+          x.strokeStyle='rgba(59,130,246,'+(0.18*(1-d/max))+')';x.lineWidth=DPR;x.stroke();}}}
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+/* ---------- init ---------- */
+(function(){var saved='en';try{saved=localStorage.getItem('lang')||'en';}catch(e){}
+  if(saved!=='en')setLang(saved);else buildTyped();typeLoop();})();
+</script>
+</body>
+</html>
