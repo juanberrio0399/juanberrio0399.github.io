@@ -107,6 +107,35 @@
   /* reveal */
   .rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
   .rv.in{opacity:1;transform:none}
+  .print-only{display:none}
+  /* ---- PRINT = generate the recruiter PDF straight from the page ---- */
+  @media print{
+    @page{margin:13mm 12mm}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #prog,nav,.cta,.tabs,.avail,.burger{display:none!important}
+    .rv{opacity:1!important;transform:none!important}
+    body{font-size:10.5px;color:#000}
+    .wrap{max-width:100%;padding:0}
+    header{padding:2px 0 6px}
+    h1{font-size:23px;margin-bottom:6px}
+    .role{font-size:13px;margin-bottom:6px}
+    .print-only{display:block!important;font-size:10px;color:#111;margin-bottom:8px}
+    .lead{font-size:11px;max-width:100%;margin-bottom:10px}
+    .stats{margin-top:10px;padding-top:10px;gap:10px}
+    .stat .n{font-size:16px}
+    section{padding:9px 0;border-top:1px solid #ccc;page-break-inside:avoid}
+    #architecture{display:none}
+    .tag{font-size:9.5px;margin-bottom:6px}
+    h2{font-size:14px;margin-bottom:8px}
+    .about p{margin-bottom:6px;font-size:10.5px}
+    .skill-row{padding:7px 0}
+    .panel{display:block!important;border:1px solid #ddd;border-radius:8px;margin-bottom:7px;padding:11px;page-break-inside:avoid}
+    .proj:hover{box-shadow:none}
+    .how li{font-size:10.5px;margin-bottom:3px}
+    .badge{border:1px solid #ccc;color:#111;background:none}
+    a{color:#111;text-decoration:none}
+    footer{border:none;padding:8px 0}
+  }
   @media(max-width:760px){
     .nav-links{display:none}
     .burger{display:block}
@@ -144,13 +173,14 @@
     <span class="avail rv"><span class="dot"></span><span data-en="Open to remote Cloud / Data roles" data-es="Abierto a roles remotos Cloud / Data">Open to remote Cloud / Data roles</span></span>
     <h1 class="rv">Juan Berrio</h1>
     <div class="role rv">Cloud &amp; Data Engineer<span data-en=" · building toward Cloud Architect" data-es=" · en camino a Cloud Architect"> · building toward Cloud Architect</span></div>
+    <p class="print-only">juandyb99@gmail.com · +57 319 617 3131 · linkedin.com/in/juanberrioo · github.com/juanberrio0399 · juanberrio0399.github.io · Bogotá, Colombia (Remote · GMT-5)</p>
     <p class="lead rv" data-en="I design serverless data platforms — ETL pipelines, analytical warehouses and cloud dashboards that turn business data into reliable, low-cost decision systems." data-es="Diseño plataformas de datos serverless — pipelines ETL, warehouses analíticos y dashboards cloud que convierten los datos del negocio en sistemas de decisión confiables y de bajo costo.">I design serverless data platforms — ETL pipelines, analytical warehouses and cloud dashboards that turn business data into reliable, low-cost decision systems.</p>
     <div class="cta rv">
-      <a class="btn primary" href="https://github.com/juanberrio0399/portfolio/raw/main/resume/CV_Juan_Berrio_EN.pdf" target="_blank" data-en="Download CV" data-es="Descargar CV">Download CV</a>
-      <a class="btn" href="https://github.com/juanberrio0399/portfolio/raw/main/resume/Juan_Berrio_Portfolio_EN.pdf" target="_blank" data-en="Portfolio (PDF)" data-es="Portafolio (PDF)">Portfolio (PDF)</a>
-      <a class="btn" href="https://www.linkedin.com/in/juanberrioo" target="_blank">LinkedIn</a>
-      <a class="btn" href="https://github.com/juanberrio0399" target="_blank">GitHub</a>
-      <a class="btn" href="mailto:juandyb99@gmail.com">Email</a>
+      <a class="btn primary" href="#" onclick="window.print();return false;" data-en="⬇ Download Portfolio (PDF)" data-es="⬇ Descargar portafolio (PDF)">⬇ Download Portfolio (PDF)</a>
+      <a class="btn" href="https://github.com/juanberrio0399/portfolio/raw/main/resume/CV_Juan_Berrio_EN.pdf" target="_blank" rel="noopener" data-en="CV (EN)" data-es="CV (EN)">CV (EN)</a>
+      <a class="btn" href="https://github.com/juanberrio0399/portfolio/raw/main/resume/CV_Juan_Berrio_ES.pdf" target="_blank" rel="noopener" data-en="CV (ES)" data-es="CV (ES)">CV (ES)</a>
+      <a class="btn" href="https://www.linkedin.com/in/juanberrioo" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="btn" href="https://github.com/juanberrio0399" target="_blank" rel="noopener">GitHub</a>
     </div>
     <div class="stats rv">
       <div class="stat"><div class="n">6+</div><div class="l" data-en="years experience" data-es="años de experiencia">years experience</div></div>
