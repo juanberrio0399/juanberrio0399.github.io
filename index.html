@@ -77,6 +77,19 @@
   .proj .tech span{font-size:12.5px;color:var(--mut);background:var(--bg2);border:1px solid var(--line);padding:3px 9px;border-radius:6px}
   .proj .lk a{color:var(--accent);font-weight:600;font-size:14px}
   .proj .lk a:hover{text-decoration:underline}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+  .tab{padding:9px 15px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--mut);font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s}
+  .tab:hover{color:var(--ink);border-color:#d4dbe6}
+  .tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .panel{display:none}
+  .panel.show{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .how{margin:14px 0}
+  .how .lbl{font-weight:700;color:var(--accent);font-size:13px;margin-bottom:7px}
+  .how ul{margin:0;padding-left:18px}
+  .how li{color:var(--body);font-size:14.5px;margin-bottom:5px}
+  .impact{font-size:14px;color:var(--body);margin-top:10px}
+  .impact b{color:#15803d}
   /* architecture */
   .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:26px;justify-content:center}
   .node{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-align:center;min-width:104px}
@@ -134,6 +147,7 @@
     <p class="lead rv" data-en="I design serverless data platforms — ETL pipelines, analytical warehouses and cloud dashboards that turn business data into reliable, low-cost decision systems." data-es="Diseño plataformas de datos serverless — pipelines ETL, warehouses analíticos y dashboards cloud que convierten los datos del negocio en sistemas de decisión confiables y de bajo costo.">I design serverless data platforms — ETL pipelines, analytical warehouses and cloud dashboards that turn business data into reliable, low-cost decision systems.</p>
     <div class="cta rv">
       <a class="btn primary" href="https://github.com/juanberrio0399/portfolio/raw/main/resume/CV_Juan_Berrio_EN.pdf" target="_blank" data-en="Download CV" data-es="Descargar CV">Download CV</a>
+      <a class="btn" href="https://github.com/juanberrio0399/portfolio/raw/main/resume/Juan_Berrio_Portfolio_EN.pdf" target="_blank" data-en="Portfolio (PDF)" data-es="Portafolio (PDF)">Portfolio (PDF)</a>
       <a class="btn" href="https://www.linkedin.com/in/juanberrioo" target="_blank">LinkedIn</a>
       <a class="btn" href="https://github.com/juanberrio0399" target="_blank">GitHub</a>
       <a class="btn" href="mailto:juandyb99@gmail.com">Email</a>
@@ -178,37 +192,88 @@
   <div class="wrap">
     <span class="tag rv">03 — <span data-en="Projects" data-es="Proyectos">Projects</span></span>
     <h2 class="rv" data-en="Selected work" data-es="Trabajo seleccionado">Selected work</h2>
-    <p class="rv" style="color:var(--mut);font-size:14.5px;margin-bottom:26px" data-en="Most repositories are private (client work). Full write-ups with architecture &amp; results live in my portfolio." data-es="La mayoría de repos son privados (trabajo de cliente). Los write-ups con arquitectura y resultados están en mi portafolio.">Most repositories are private (client work). Full write-ups with architecture &amp; results live in my portfolio.</p>
+    <p class="rv" style="color:var(--mut);font-size:14.5px;margin-bottom:24px" data-en="Most repositories are private (client work). Here's what each project does and — more importantly — how I automate it." data-es="La mayoría de repos son privados (trabajo de cliente). Aquí está qué hace cada proyecto y, más importante, cómo lo automatizo.">Most repositories are private (client work). Here's what each project does and — more importantly — how I automate it.</p>
 
-    <div class="proj rv">
+    <div class="tabs rv">
+      <button class="tab on" onclick="showTab(0)">DataForge Cloud</button>
+      <button class="tab" onclick="showTab(1)">DataForge</button>
+      <button class="tab" onclick="showTab(2)" data-en="Portal Automation (RPA)" data-es="Automatización RPA">Portal Automation (RPA)</button>
+      <button class="tab" onclick="showTab(3)">UGPP Shield Pro</button>
+      <button class="tab" onclick="showTab(4)">Hearthwood</button>
+    </div>
+
+    <div class="proj panel show">
       <div class="ph"><h3>DataForge Cloud</h3><span class="badge" data-en="Production" data-es="Producción">Production</span></div>
-      <p data-en="Serverless analytics platform. A local ETL worker publishes to Cloudflare R2; a dashboard (Pages + React + DuckDB-WASM) queries Parquet directly in the browser — no backend, ~$0 infrastructure." data-es="Plataforma de analítica serverless. Un worker ETL local publica en Cloudflare R2; un dashboard (Pages + React + DuckDB-WASM) consulta Parquet directo en el navegador — sin backend, ~$0 de infraestructura.">Serverless analytics platform. A local ETL worker publishes to Cloudflare R2; a dashboard (Pages + React + DuckDB-WASM) queries Parquet directly in the browser — no backend, ~$0 infrastructure.</p>
-      <div class="tech"><span>Cloudflare R2/Pages</span><span>React</span><span>DuckDB-WASM</span><span>GitHub Actions</span></div>
+      <p data-en="A serverless analytics platform: business data ends up as a self-updating cloud dashboard, with no backend and ~$0 infrastructure." data-es="Una plataforma de analítica serverless: los datos del negocio terminan en un dashboard cloud que se actualiza solo, sin backend y con ~$0 de infraestructura.">A serverless analytics platform: business data ends up as a self-updating cloud dashboard, with no backend and ~$0 infrastructure.</p>
+      <div class="how">
+        <div class="lbl" data-en="How I automate it" data-es="Cómo lo automatizo">How I automate it</div>
+        <ul>
+          <li data-en="Incremental ingestion — only the files that changed get reprocessed (catalog-based control)." data-es="Ingesta incremental — solo se reprocesan los archivos que cambiaron (control por catálogo).">Incremental ingestion — only the files that changed get reprocessed (catalog-based control).</li>
+          <li data-en="The fresh result is auto-published to Cloudflare R2 (object storage)." data-es="El resultado fresco se publica solo en Cloudflare R2 (almacenamiento de objetos).">The fresh result is auto-published to Cloudflare R2 (object storage).</li>
+          <li data-en="A serverless dashboard queries the data directly in the browser (DuckDB-WASM) — no server, no database to host." data-es="Un dashboard serverless consulta los datos directo en el navegador (DuckDB-WASM) — sin servidor ni base de datos que alojar.">A serverless dashboard queries the data directly in the browser (DuckDB-WASM) — no server, no database to host.</li>
+          <li data-en="Scheduled 3×/day (Task Scheduler + GitHub Actions) with failure isolation: a cloud hiccup never breaks the local run." data-es="Programado 3×/día (Task Scheduler + GitHub Actions) con aislamiento de fallos: un problema en la nube nunca tumba la corrida local.">Scheduled 3×/day (Task Scheduler + GitHub Actions) with failure isolation: a cloud hiccup never breaks the local run.</li>
+        </ul>
+      </div>
+      <div class="tech"><span>Cloudflare R2/Pages</span><span>React</span><span>DuckDB-WASM</span><span>GitHub Actions</span><span>Python</span></div>
+      <p class="impact" data-en="<b>Impact:</b> analytics that update themselves, no server to maintain, ~$0 infrastructure." data-es="<b>Impacto:</b> analítica que se actualiza sola, sin servidor que mantener, ~$0 de infraestructura."><b>Impact:</b> analytics that update themselves, no server to maintain, ~$0 infrastructure.</p>
       <div class="lk"><a href="https://github.com/juanberrio0399/portfolio/blob/main/case-studies/01-dataforge-customs-reconciliation_EN.md" target="_blank" data-en="Read case study →" data-es="Ver case study →">Read case study →</a></div>
     </div>
 
-    <div class="proj rv">
+    <div class="proj panel">
       <div class="ph"><h3>DataForge</h3><span class="badge" data-en="Production" data-es="Producción">Production</span></div>
-      <p data-en="ETL pipeline (~4,100 lines) that incrementally ingests Excel into Parquet and exposes a DuckDB warehouse. Package-level tax reconciliation across 5 sources. Runs unattended 3×/day." data-es="Pipeline ETL (~4.100 líneas) que ingiere Excel de forma incremental a Parquet y expone un warehouse DuckDB. Conciliación tributaria guía-a-guía sobre 5 fuentes. Corre solo 3×/día.">ETL pipeline (~4,100 lines) that incrementally ingests Excel into Parquet and exposes a DuckDB warehouse. Package-level tax reconciliation across 5 sources. Runs unattended 3×/day.</p>
+      <p data-en="The ETL engine behind the platform — it turns thousands of business Excel files into a clean, queryable warehouse." data-es="El motor ETL detrás de la plataforma — convierte miles de Excel del negocio en un warehouse limpio y consultable.">The ETL engine behind the platform — it turns thousands of business Excel files into a clean, queryable warehouse.</p>
+      <div class="how">
+        <div class="lbl" data-en="How I automate it" data-es="Cómo lo automatizo">How I automate it</div>
+        <ul>
+          <li data-en="Layered architecture (readers → transforms → writers) that's easy to extend and maintain." data-es="Arquitectura por capas (readers → transforms → writers) fácil de extender y mantener.">Layered architecture (readers → transforms → writers) that's easy to extend and maintain.</li>
+          <li data-en="Incremental deduplication and consolidation into columnar Parquet (rebuilds in seconds)." data-es="Deduplicación incremental y consolidación en Parquet columnar (se reconstruye en segundos).">Incremental deduplication and consolidation into columnar Parquet (rebuilds in seconds).</li>
+          <li data-en="DuckDB views ready to query; a catalog reprocesses only what changed, not the whole history." data-es="Vistas DuckDB listas para consultar; un catálogo reprocesa solo lo que cambió, no todo el histórico.">DuckDB views ready to query; a catalog reprocesses only what changed, not the whole history.</li>
+        </ul>
+      </div>
       <div class="tech"><span>Python</span><span>Pandas</span><span>DuckDB</span><span>Parquet</span></div>
+      <p class="impact" data-en="<b>Impact:</b> 25M+ records · package-level reconciliation across 5 sources · runs unattended 3×/day." data-es="<b>Impacto:</b> 25M+ registros · conciliación guía-a-guía sobre 5 fuentes · corre desatendido 3×/día."><b>Impact:</b> 25M+ records · package-level reconciliation across 5 sources · runs unattended 3×/day.</p>
       <div class="lk"><a href="https://github.com/juanberrio0399/portfolio/blob/main/projects/dataforge/README.md" target="_blank" data-en="Overview →" data-es="Detalle →">Overview →</a></div>
     </div>
 
-    <div class="proj rv">
-      <div class="ph"><h3>UGPP Shield Pro</h3><span class="badge" data-en="Web app" data-es="Web app">Web app</span></div>
-      <p data-en="Cloud web app aimed at CFOs for fiscal &amp; compliance intelligence, deployed on Cloudflare Pages." data-es="Web app cloud orientada a CFOs para inteligencia fiscal y de cumplimiento, desplegada en Cloudflare Pages.">Cloud web app aimed at CFOs for fiscal &amp; compliance intelligence, deployed on Cloudflare Pages.</p>
-      <div class="tech"><span>JavaScript</span><span>Vite</span><span>Cloudflare Pages</span></div>
-    </div>
-
-    <div class="proj rv">
+    <div class="proj panel">
       <div class="ph"><h3 data-en="Logistics Portal Automation" data-es="Automatización de portal logístico">Logistics Portal Automation</h3><span class="badge">RPA</span></div>
-      <p data-en="A Playwright bot that uploads/downloads documents to an e-commerce logistics portal, matching records by business rules — eliminating repetitive manual work." data-es="Un bot Playwright que sube/descarga documentos a un portal logístico de e-commerce, emparejando registros por reglas de negocio — elimina trabajo manual repetitivo.">A Playwright bot that uploads/downloads documents to an e-commerce logistics portal, matching records by business rules — eliminating repetitive manual work.</p>
+      <p data-en="A bot that does the repetitive portal work a person used to do by hand — uploading and downloading documents." data-es="Un bot que hace el trabajo repetitivo del portal que antes se hacía a mano — subir y descargar documentos.">A bot that does the repetitive portal work a person used to do by hand — uploading and downloading documents.</p>
+      <div class="how">
+        <div class="lbl" data-en="How I automate it" data-es="Cómo lo automatizo">How I automate it</div>
+        <ul>
+          <li data-en="The bot logs in and matches records by business rules (no manual lookup)." data-es="El bot inicia sesión y empareja registros por reglas de negocio (sin búsqueda manual).">The bot logs in and matches records by business rules (no manual lookup).</li>
+          <li data-en="Uploads/downloads the right files to the portal with no human intervention." data-es="Sube/descarga los archivos correctos al portal sin intervención humana.">Uploads/downloads the right files to the portal with no human intervention.</li>
+          <li data-en="Confirms success by the actual network response — not by assuming it worked." data-es="Confirma el éxito por la respuesta de red real — no por suponer que funcionó.">Confirms success by the actual network response — not by assuming it worked.</li>
+        </ul>
+      </div>
       <div class="tech"><span>Python</span><span>Playwright</span></div>
+      <p class="impact" data-en="<b>Impact:</b> hours of manual portal work removed; fewer human errors." data-es="<b>Impacto:</b> elimina horas de trabajo manual en el portal; menos errores humanos."><b>Impact:</b> hours of manual portal work removed; fewer human errors.</p>
     </div>
 
-    <div class="proj rv">
+    <div class="proj panel">
+      <div class="ph"><h3>UGPP Shield Pro</h3><span class="badge" data-en="Web app" data-es="Web app">Web app</span></div>
+      <p data-en="A cloud web app aimed at CFOs — fiscal &amp; compliance intelligence in one place." data-es="Una web app cloud orientada a CFOs — inteligencia fiscal y de cumplimiento en un solo lugar.">A cloud web app aimed at CFOs — fiscal &amp; compliance intelligence in one place.</p>
+      <div class="how">
+        <div class="lbl" data-en="How I automate it" data-es="Cómo lo automatizo">How I automate it</div>
+        <ul>
+          <li data-en="Automated fiscal / compliance calculations and validations." data-es="Cálculos y validaciones fiscales / de cumplimiento automatizados.">Automated fiscal / compliance calculations and validations.</li>
+          <li data-en="Serverless deployment on Cloudflare Pages — nothing to administer or pay per server." data-es="Despliegue serverless en Cloudflare Pages — nada que administrar ni pagar por servidor.">Serverless deployment on Cloudflare Pages — nothing to administer or pay per server.</li>
+        </ul>
+      </div>
+      <div class="tech"><span>JavaScript</span><span>Vite</span><span>Cloudflare Pages</span></div>
+      <p class="impact" data-en="<b>Impact:</b> a decision &amp; fiscal-intelligence tool for leadership." data-es="<b>Impacto:</b> una herramienta de decisión e inteligencia fiscal para dirección."><b>Impact:</b> a decision &amp; fiscal-intelligence tool for leadership.</p>
+    </div>
+
+    <div class="proj panel">
       <div class="ph"><h3>Hearthwood</h3><span class="badge" data-en="Side project" data-es="Side project">Side project</span></div>
-      <p data-en="A cooperative survival game built from scratch by phases — client-server architecture across ~23 services. Systems design beyond data." data-es="Juego cooperativo de supervivencia hecho desde cero por fases — arquitectura cliente-servidor en ~23 servicios. Diseño de sistemas más allá de datos.">A cooperative survival game built from scratch by phases — client-server architecture across ~23 services. Systems design beyond data.</p>
+      <p data-en="A cooperative survival game built from scratch — proof I design systems beyond data." data-es="Un juego cooperativo de supervivencia hecho desde cero — prueba de que diseño sistemas más allá de datos.">A cooperative survival game built from scratch — proof I design systems beyond data.</p>
+      <div class="how">
+        <div class="lbl" data-en="How it's built" data-es="Cómo está construido">How it's built</div>
+        <ul>
+          <li data-en="Client-server architecture organized across ~23 services, built by phases." data-es="Arquitectura cliente-servidor organizada en ~23 servicios, construida por fases.">Client-server architecture organized across ~23 services, built by phases.</li>
+          <li data-en="Clean separation of concerns — the same engineering discipline I apply to data systems." data-es="Separación clara de responsabilidades — la misma disciplina de ingeniería que aplico a los sistemas de datos.">Clean separation of concerns — the same engineering discipline I apply to data systems.</li>
+        </ul>
+      </div>
       <div class="tech"><span>Luau</span><span>Roblox</span></div>
     </div>
   </div>
@@ -271,6 +336,12 @@ function setLang(l){
   document.getElementById('bEN').classList.toggle('on',l==='en');
   document.getElementById('bES').classList.toggle('on',l==='es');
   try{localStorage.setItem('lang',l)}catch(e){}
+}
+// project tabs
+function showTab(i){
+  var tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
+  tabs.forEach(function(t,j){t.classList.toggle('on',j===i)});
+  panels.forEach(function(p,j){p.classList.toggle('show',j===i)});
 }
 // scroll progress
 var prog=document.getElementById('prog');
