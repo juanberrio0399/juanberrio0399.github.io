@@ -7,3 +7,7 @@ Interactive portfolio of **Juan Berrio** — Cloud & Data Engineer.
 Single-file static site (HTML + CSS + vanilla JS): animated canvas network background,
 typewriter roles, scroll-reveal animations, animated counters and an EN/ES language toggle.
 No build step — served directly by GitHub Pages.
+
+## 🔮 Roadmap Técnico
+
+Próxima fase: Migración a despliegue automatizado mediante GitHub Actions y gestión de DNS/Seguridad mediante Terraform para reflejar prácticas reales de Cloud Engineering.
