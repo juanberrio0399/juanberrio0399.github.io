@@ -1,5 +1,7 @@
 # juanberrio0399.github.io
 
+[![Lighthouse CI](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml)
+
 Interactive portfolio of **Juan Berrio** — Cloud & Data Engineer.
 
 🔗 Live: https://juanberrio0399.github.io
