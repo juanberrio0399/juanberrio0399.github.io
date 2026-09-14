@@ -13,3 +13,5 @@ No build step — served directly by GitHub Pages.
 ## 🔮 Roadmap Técnico
 
 Próxima fase: Migración a despliegue automatizado mediante GitHub Actions y gestión de DNS/Seguridad mediante Terraform para reflejar prácticas reales de Cloud Engineering.
+
+![Cloud Architecture](architecture.png)
