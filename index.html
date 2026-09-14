@@ -141,8 +141,18 @@
   .contact .cta{margin-top:8px}
   footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-size:13.5px;text-align:center}
   /* reveal */
-  .rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
-  .rv.in{opacity:1;transform:none}
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .rv{
+    view-timeline-name: --section-reveal;
+    view-timeline-axis: block;
+    animation-name: reveal;
+    animation-fill-mode: both;
+    animation-timeline: --section-reveal;
+    animation-range: entry 10% cover 30%;
+  }
   .print-only{display:none}
   /* ---- PRINT = generate the recruiter PDF straight from the page ---- */
   @media print{
@@ -434,9 +444,7 @@ addEventListener('scroll',function(){
   var h=document.documentElement,sc=h.scrollTop/(h.scrollHeight-h.clientHeight);
   prog.style.width=(sc*100)+'%';
 });
-// reveal
-var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
-document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
+
 // close mobile menu on click
 document.querySelectorAll('#links a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('links').classList.remove('open')})});
 document.getElementById('yr').textContent=new Date().getFullYear();
