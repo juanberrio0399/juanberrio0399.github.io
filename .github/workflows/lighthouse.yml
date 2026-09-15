@@ -1,24 +1,24 @@
 name: Lighthouse CI
 
+# Audita el sitio servido desde los archivos del repo (no la URL en vivo), así un PR
+# muestra su propio puntaje antes de llegar a main. Umbrales en .lighthouserc.json.
 on:
   push:
     branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Audit URL with Lighthouse
+      - uses: actions/checkout@v5
+      - name: Audit with Lighthouse
         uses: treosh/lighthouse-ci-action@v12
         with:
-          urls: |
-            https://juanberrio0399.github.io/
+          configPath: ./.lighthouserc.json
           uploadArtifacts: true
           temporaryPublicStorage: true
-          budgetPath: ./.lighthouserc.json
-          minScore:
-            performance: 90
-            accessibility: 90
-            best-practices: 90
-            seo: 90
