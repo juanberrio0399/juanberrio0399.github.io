@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- CSP for this page only. On top of the site policy it allows what DuckDB-WASM needs, and nothing else:
+     'wasm-unsafe-eval' to compile WebAssembly, blob: workers, and fetching the engine files from jsDelivr
+     (each one is checked against a pinned SHA-384 hash in assets/js/playground.js). -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src blob:; connect-src 'self' https://cdn.jsdelivr.net blob:; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; base-uri 'self'; form-action 'none'" />
+<title>SQL Playground — Juan Berrio</title>
+<meta name="description" content="Run SQL in your browser with DuckDB-WASM over a real snapshot of Juan Berrio's public GitHub activity. Local-first: no server, no backend." />
+<link rel="canonical" href="https://juanberrio0399.github.io/playground.html" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="SQL Playground — Juan Berrio" />
+<meta property="og:description" content="DuckDB-WASM running SQL over columnar data entirely in the browser." />
+<meta property="og:url" content="https://juanberrio0399.github.io/playground.html" />
+<meta property="og:image" content="https://juanberrio0399.github.io/og-image.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/playground.css" />
+</head>
+<body>
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="./">Juan <span>Berrio</span></a>
+    <div class="nav-r">
+      <a class="nav-back" href="./#projects" data-en="← Portfolio" data-es="← Portafolio">← Portfolio</a>
+      <div class="lang">
+        <button type="button" id="bEN" class="on">EN</button>
+        <button type="button" id="bES">ES</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <header class="pg-head">
+    <div class="wrap">
+      <span class="tag" data-en="Data playground · local-first" data-es="Data playground · local-first">Data playground · local-first</span>
+      <h1 data-en="SQL in your browser" data-es="SQL en tu navegador">SQL in your browser</h1>
+      <p class="lead" data-en="Query a real snapshot of my public GitHub activity with DuckDB-WASM — the same engine behind my DataForge dashboards. The SQL runs on your device: no server, no database, nothing sent anywhere." data-es="Consulta una foto real de mi actividad pública en GitHub con DuckDB-WASM — el mismo motor de mis dashboards de DataForge. El SQL corre en tu equipo: sin servidor, sin base de datos, sin enviar nada.">Query a real snapshot of my public GitHub activity with DuckDB-WASM — the same engine behind my DataForge dashboards. The SQL runs on your device: no server, no database, nothing sent anywhere.</p>
+    </div>
+  </header>
+
+  <section id="editor" aria-labelledby="editor-title">
+    <div class="wrap">
+      <h2 id="editor-title" data-en="Try a query" data-es="Prueba una consulta">Try a query</h2>
+      <div class="presets" id="presets" role="group" aria-label="Example queries"></div>
+
+      <label class="field-label" for="sql" data-en="SQL query" data-es="Consulta SQL">SQL query</label>
+      <textarea id="sql" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="engine-note"></textarea>
+
+      <div class="toolbar">
+        <button type="button" class="btn primary" id="run" data-en="Run query" data-es="Ejecutar consulta">Run query</button>
+        <label class="limit"><span data-en="Show up to" data-es="Mostrar hasta">Show up to</span>
+          <select id="limit">
+            <option value="100" selected>100</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+          </select>
+          <span data-en="rows" data-es="filas">rows</span>
+        </label>
+        <span class="hint"><kbd>Ctrl</kbd> + <kbd>Enter</kbd></span>
+      </div>
+      <p class="hint" id="engine-note" data-en="The first run downloads the DuckDB-WASM engine (about 7 MB compressed) from jsDelivr. Every file is checked against a pinned SHA-384 hash before it runs." data-es="La primera ejecución descarga el motor DuckDB-WASM (unos 7 MB comprimidos) desde jsDelivr. Cada archivo se verifica contra un hash SHA-384 fijo antes de ejecutarse.">The first run downloads the DuckDB-WASM engine (about 7 MB compressed) from jsDelivr. Every file is checked against a pinned SHA-384 hash before it runs.</p>
+
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+      <p class="hint" id="snapshot" hidden></p>
+      <div class="err" id="error" role="alert" hidden></div>
+      <div class="table-wrap" id="results-wrap" tabindex="0" role="region" aria-labelledby="results-caption" hidden>
+        <table class="results" id="results">
+          <caption class="sr-only" id="results-caption" data-en="Query results" data-es="Resultados de la consulta">Query results</caption>
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <noscript><p class="err">The playground needs JavaScript and WebAssembly.</p></noscript>
+    </div>
+  </section>
+
+  <section id="tables" aria-labelledby="tables-title">
+    <div class="wrap">
+      <h2 id="tables-title" data-en="Tables" data-es="Tablas">Tables</h2>
+      <div class="schema">
+        <div>
+          <h3>repos</h3>
+          <p data-en="One row per public repository." data-es="Una fila por repositorio público.">One row per public repository.</p>
+          <code>name, description, language, topics, license, stars, forks, size_kb, created_at, pushed_at</code>
+        </div>
+        <div>
+          <h3>languages</h3>
+          <p data-en="Bytes of code per language, as GitHub detects them." data-es="Bytes de código por lenguaje, según los detecta GitHub.">Bytes of code per language, as GitHub detects them.</p>
+          <code>repo, language, bytes</code>
+        </div>
+        <div>
+          <h3>commits_daily</h3>
+          <p data-en="Commits per day on each default branch (UTC)." data-es="Commits por día en la rama principal de cada repo (UTC).">Commits per day on each default branch (UTC).</p>
+          <code>repo, day, commits</code>
+        </div>
+        <div>
+          <h3>pull_requests</h3>
+          <p data-en="Every pull request, open or closed (UTC)." data-es="Todos los pull requests, abiertos o cerrados (UTC).">Every pull request, open or closed (UTC).</p>
+          <code>repo, number, title, author, created_at, closed_at, merged_at</code>
+        </div>
+        <div>
+          <h3>snapshot</h3>
+          <p data-en="When the data was taken, and from where." data-es="Cuándo se tomaron los datos y de dónde.">When the data was taken, and from where.</p>
+          <code>taken_at, source</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <h2 id="how-title" data-en="How it works" data-es="Cómo funciona">How it works</h2>
+      <ol class="steps">
+        <li data-en="The data is five small Apache Arrow files (columnar, typed) served as static files by GitHub Pages." data-es="Los datos son cinco archivos Apache Arrow pequeños (columnares y tipados) servidos como archivos estáticos por GitHub Pages.">The data is five small Apache Arrow files (columnar, typed) served as static files by GitHub Pages.</li>
+        <li data-en="Nothing heavy loads with the page. Your first query fetches DuckDB-WASM 1.32.0 from jsDelivr, verifies it and starts it in a Web Worker." data-es="Nada pesado carga con la página. Tu primera consulta trae DuckDB-WASM 1.32.0 desde jsDelivr, lo verifica y lo arranca en un Web Worker.">Nothing heavy loads with the page. Your first query fetches DuckDB-WASM 1.32.0 from jsDelivr, verifies it and starts it in a Web Worker.</li>
+        <li data-en="Queries run locally, in memory. There is no backend to host, secure or pay for — the same local-first pattern I use in production." data-es="Las consultas corren localmente, en memoria. No hay backend que alojar, asegurar ni pagar — el mismo patrón local-first que uso en producción.">Queries run locally, in memory. There is no backend to host, secure or pay for — the same local-first pattern I use in production.</li>
+      </ol>
+      <p class="note" data-en="Source: GitHub REST API, public repositories only. The exact snapshot time is in the <code>snapshot</code> table; the data is rebuilt with <a href=&quot;https://github.com/juanberrio0399/juanberrio0399.github.io/blob/main/scripts/playground/build_data.py&quot;>scripts/playground/build_data.py</a>." data-es="Fuente: API REST de GitHub, solo repositorios públicos. La hora exacta de la foto está en la tabla <code>snapshot</code>; los datos se regeneran con <a href=&quot;https://github.com/juanberrio0399/juanberrio0399.github.io/blob/main/scripts/playground/build_data.py&quot;>scripts/playground/build_data.py</a>.">Source: GitHub REST API, public repositories only. The exact snapshot time is in the <code>snapshot</code> table; the data is rebuilt with <a href="https://github.com/juanberrio0399/juanberrio0399.github.io/blob/main/scripts/playground/build_data.py">scripts/playground/build_data.py</a>.</p>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">© <span id="yr">2026</span> Juan Berrio · Cloud &amp; Data Engineer · Bogotá, Colombia</div></footer>
+
+<script type="module" src="assets/js/playground.js"></script>
+</body>
+</html>
