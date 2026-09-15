@@ -25,6 +25,8 @@
 </script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- CSP (GitHub Pages cannot send headers). Adding a new external script/style/font/image host? Allow it here and add SRI if it is version-pinned. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; base-uri 'self'; form-action 'none'" />
 <title>Juan Berrio — Cloud & Data Engineer</title>
 <meta name="description" content="Juan Berrio — Cloud & Data Engineer. Infrastructure as Code, CI/CD and serverless cloud platforms. Building toward Cloud Architect." />
 <link rel="canonical" href="https://juanberrio0399.github.io/" />
@@ -44,143 +46,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<style>
-  :root{
-    --bg:#ffffff; --bg2:#f8fafc; --ink:#0f172a; --body:#334155; --mut:#64748b;
-    --line:#e6eaf0; --accent:#1d4ed8; --accent-soft:#eff4ff; --maxw:880px;
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--body);
-    line-height:1.7;-webkit-font-smoothing:antialiased;font-size:16px}
-  h1,h2,h3{color:var(--ink);letter-spacing:-.02em;line-height:1.15}
-  a{color:inherit;text-decoration:none}
-  ::selection{background:var(--accent-soft)}
-  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
-  /* scroll progress */
-  #prog{position:fixed;top:0;left:0;height:2px;width:0;background:var(--accent);z-index:100;transition:width .1s linear}
-  /* nav */
-  nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.85);backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--line)}
-  .nav-in{max-width:var(--maxw);margin:0 auto;padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
-  .logo{font-weight:700;color:var(--ink);font-size:16px;letter-spacing:-.02em}
-  .logo span{color:var(--accent)}
-  .nav-r{display:flex;align-items:center;gap:24px}
-  .nav-links{display:flex;gap:24px}
-  .nav-links a{font-size:14.5px;color:var(--mut);font-weight:500;transition:color .2s}
-  .nav-links a:hover{color:var(--ink)}
-  .lang{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
-  .lang button{background:none;border:none;color:var(--mut);padding:5px 10px;cursor:pointer;font-family:inherit;font-weight:600;font-size:12.5px}
-  .lang button.on{background:var(--accent);color:#fff}
-  .burger{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink)}
-  /* hero */
-  header{padding:96px 0 72px}
-  .avail{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent);
-    background:var(--accent-soft);padding:6px 13px;border-radius:30px;margin-bottom:26px}
-  .avail .dot{width:7px;height:7px;border-radius:50%;background:#16a34a}
-  h1{font-size:clamp(38px,6vw,60px);font-weight:700;margin-bottom:14px}
-  .role{font-size:clamp(18px,2.6vw,23px);color:var(--accent);font-weight:600;margin-bottom:22px}
-  .lead{font-size:clamp(16px,2vw,18.5px);color:var(--body);max-width:660px;margin-bottom:34px}
-  .cta{display:flex;flex-wrap:wrap;gap:12px}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:10px;font-weight:600;
-    font-size:14.5px;border:1px solid var(--line);transition:all .2s;background:#fff;color:var(--ink)}
-  .btn:hover{border-color:var(--accent);color:var(--accent)}
-  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .btn.primary:hover{background:#1843b8;color:#fff}
-  /* sections */
-  section{padding:64px 0;border-top:1px solid var(--line)}
-  .tag{font-size:13px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px;display:block}
-  h2{font-size:clamp(24px,3.6vw,32px);font-weight:700;margin-bottom:22px}
-  .about p{margin-bottom:16px;color:var(--body)}
-  .about p strong{color:var(--ink);font-weight:600}
-  /* stats */
-  .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;margin-top:46px;padding-top:34px;border-top:1px solid var(--line)}
-  .stat .n{font-size:clamp(20px,2.6vw,26px);font-weight:700;color:var(--ink)}
-  .stat .l{font-size:12.5px;color:var(--mut);margin-top:3px}
-  /* skills */
-  .skill-row{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
-  .skill-row:last-child{border:none}
-  .skill-row .k{font-weight:600;color:var(--ink);min-width:180px;font-size:15px}
-  .skill-row .v{color:var(--body);font-size:15px}
-  /* projects */
-  .proj{padding:24px;border:1px solid var(--line);border-radius:14px;margin-bottom:16px;transition:box-shadow .2s,border-color .2s;background:#fff}
-  .proj:hover{box-shadow:0 8px 28px -14px rgba(15,23,42,.18);border-color:#d4dbe6}
-  .proj .ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:12px}
-  .proj h3{font-size:19px}
-  .proj .badge{font-size:11.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:20px;white-space:nowrap}
-  .proj p{color:var(--body);font-size:15px;margin-bottom:14px}
-  .proj .tech{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
-  .proj .tech span{font-size:12.5px;color:var(--mut);background:var(--bg2);border:1px solid var(--line);padding:3px 9px;border-radius:6px}
-  .proj .lk a{color:var(--accent);font-weight:600;font-size:14px}
-  .proj .lk a:hover{text-decoration:underline}
-  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
-  .tab{padding:9px 15px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--mut);font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;transition:all .2s}
-  .tab:hover{color:var(--ink);border-color:#d4dbe6}
-  .tab.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-  .panel{display:none}
-  .panel.show{display:block;animation:fade .35s ease}
-  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  .how{margin:14px 0}
-  .how .lbl{font-weight:700;color:var(--accent);font-size:13px;margin-bottom:7px}
-  .how ul{margin:0;padding-left:18px}
-  .how li{color:var(--body);font-size:14.5px;margin-bottom:5px}
-  .impact{font-size:14px;color:var(--body);margin-top:10px}
-  .impact b{color:#15803d}
-  /* architecture */
-  .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:26px;justify-content:center}
-  .node{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;text-align:center;min-width:104px}
-  .node .nt{font-weight:600;color:var(--ink);font-size:13.5px}
-  .node .nd{font-size:11.5px;color:var(--mut);margin-top:2px}
-  .ar{color:var(--accent);font-weight:700}
-  /* learning */
-  .learn li{list-style:none;display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);color:var(--body);font-size:15px}
-  .learn li:last-child{border:none}
-  .learn .st{margin-left:auto;font-size:12.5px;color:var(--mut);white-space:nowrap}
-  .learn .ok{color:#16a34a;font-weight:700}
-  /* contact */
-  .contact .cta{margin-top:8px}
-  footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-size:13.5px;text-align:center}
-  /* reveal */
-  .rv{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
-  .rv.in{opacity:1;transform:none}
-  .print-only{display:none}
-  /* ---- PRINT = generate the recruiter PDF straight from the page ---- */
-  @media print{
-    @page{margin:13mm 12mm}
-    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-    #prog,nav,.cta,.tabs,.avail,.burger{display:none!important}
-    .rv{opacity:1!important;transform:none!important}
-    body{font-size:10.5px;color:#000}
-    .wrap{max-width:100%;padding:0}
-    header{padding:2px 0 6px}
-    h1{font-size:23px;margin-bottom:6px}
-    .role{font-size:13px;margin-bottom:6px}
-    .print-only{display:block!important;font-size:10px;color:#111;margin-bottom:8px}
-    .lead{font-size:11px;max-width:100%;margin-bottom:10px}
-    .stats{margin-top:10px;padding-top:10px;gap:10px}
-    .stat .n{font-size:16px}
-    section{padding:9px 0;border-top:1px solid #ccc;page-break-inside:avoid}
-    #architecture{display:none}
-    .tag{font-size:9.5px;margin-bottom:6px}
-    h2{font-size:14px;margin-bottom:8px}
-    .about p{margin-bottom:6px;font-size:10.5px}
-    .skill-row{padding:7px 0}
-    .panel{display:block!important;border:1px solid #ddd;border-radius:8px;margin-bottom:7px;padding:11px;page-break-inside:avoid}
-    .proj:hover{box-shadow:none}
-    .how li{font-size:10.5px;margin-bottom:3px}
-    .badge{border:1px solid #ccc;color:#111;background:none}
-    a{color:#111;text-decoration:none}
-    footer{border:none;padding:8px 0}
-  }
-  @media(max-width:760px){
-    .nav-links{display:none}
-    .burger{display:block}
-    .nav-links.open{display:flex;position:absolute;top:57px;left:0;right:0;flex-direction:column;background:#fff;
-      border-bottom:1px solid var(--line);padding:18px 28px;gap:16px}
-    .stats{grid-template-columns:repeat(2,1fr);gap:22px}
-    .skill-row .k{min-width:100%}
-  }
-</style>
+<link rel="stylesheet" href="assets/css/main.css" />
 </head>
 <body>
 <div id="prog"></div>
@@ -196,10 +62,10 @@
         <a href="#contact" data-en="Contact" data-es="Contacto">Contact</a>
       </div>
       <div class="lang">
-        <button id="bEN" class="on" onclick="setLang('en')">EN</button>
-        <button id="bES" onclick="setLang('es')">ES</button>
+        <button id="bEN" class="on">EN</button>
+        <button id="bES">ES</button>
       </div>
-      <button class="burger" onclick="document.getElementById('links').classList.toggle('open')">☰</button>
+      <button class="burger" id="burger">☰</button>
     </div>
   </div>
 </nav>
@@ -212,7 +78,7 @@
     <p class="print-only">juandyb99@gmail.com · +57 319 617 3131 · linkedin.com/in/juanberrioo · github.com/juanberrio0399 · juanberrio0399.github.io · Bogotá, Colombia (Remote · GMT-5)</p>
     <p class="lead rv" data-en="I build and automate cloud infrastructure — serverless platforms, Infrastructure as Code and CI/CD — that runs reliably at low cost." data-es="Construyo y automatizo infraestructura cloud — plataformas serverless, Infraestructura como Código y CI/CD — que corre confiable y a bajo costo.">I build and automate cloud infrastructure — serverless platforms, Infrastructure as Code and CI/CD — that runs reliably at low cost.</p>
     <div class="cta rv">
-      <a class="btn primary" href="#" onclick="window.print();return false;" data-en="⬇ Download Portfolio (PDF)" data-es="⬇ Descargar portafolio (PDF)">⬇ Download Portfolio (PDF)</a>
+      <a class="btn primary" id="printPdf" href="#" data-en="⬇ Download Portfolio (PDF)" data-es="⬇ Descargar portafolio (PDF)">⬇ Download Portfolio (PDF)</a>
       <a class="btn" href="https://github.com/juanberrio0399/portfolio/raw/main/resume/CV_Juan_Berrio_EN.pdf" target="_blank" rel="noopener" data-en="CV (EN)" data-es="CV (EN)">CV (EN)</a>
       <a class="btn" href="https://github.com/juanberrio0399/portfolio/raw/main/resume/CV_Juan_Berrio_ES.pdf" target="_blank" rel="noopener" data-en="CV (ES)" data-es="CV (ES)">CV (ES)</a>
       <a class="btn" href="https://www.linkedin.com/in/juanberrioo" target="_blank" rel="noopener">LinkedIn</a>
@@ -258,15 +124,15 @@
   <div class="wrap">
     <span class="tag rv">03 — <span data-en="Projects" data-es="Proyectos">Projects</span></span>
     <h2 class="rv" data-en="Selected work" data-es="Trabajo seleccionado">Selected work</h2>
-    <p class="rv" style="color:var(--mut);font-size:14.5px;margin-bottom:24px" data-en="Most repositories are private (client work). Here's what each project does and — more importantly — how I automate it." data-es="La mayoría de repos son privados (trabajo de cliente). Aquí está qué hace cada proyecto y, más importante, cómo lo automatizo.">Most repositories are private (client work). Here's what each project does and — more importantly — how I automate it.</p>
+    <p class="rv intro" data-en="Most repositories are private (client work). Here's what each project does and — more importantly — how I automate it." data-es="La mayoría de repos son privados (trabajo de cliente). Aquí está qué hace cada proyecto y, más importante, cómo lo automatizo.">Most repositories are private (client work). Here's what each project does and — more importantly — how I automate it.</p>
 
     <div class="tabs rv">
-      <button class="tab on" onclick="showTab(0)">DataForge Cloud</button>
-      <button class="tab" onclick="showTab(1)">DataForge</button>
-      <button class="tab" onclick="showTab(2)" data-en="Portal Automation (RPA)" data-es="Automatización RPA">Portal Automation (RPA)</button>
-      <button class="tab" onclick="showTab(3)">UGPP Shield Pro</button>
-      <button class="tab" onclick="showTab(4)">Hearthwood</button>
-      <button class="tab" onclick="showTab(5)" data-en="RAG Assistant (AI)" data-es="Asistente RAG (IA)">RAG Assistant (AI)</button>
+      <button class="tab on">DataForge Cloud</button>
+      <button class="tab">DataForge</button>
+      <button class="tab" data-en="Portal Automation (RPA)" data-es="Automatización RPA">Portal Automation (RPA)</button>
+      <button class="tab">UGPP Shield Pro</button>
+      <button class="tab">Hearthwood</button>
+      <button class="tab" data-en="RAG Assistant (AI)" data-es="Asistente RAG (IA)">RAG Assistant (AI)</button>
     </div>
 
     <div class="proj panel show">
@@ -367,7 +233,7 @@
   <div class="wrap">
     <span class="tag rv">04 — <span data-en="How it works" data-es="Cómo funciona">How it works</span></span>
     <h2 class="rv" data-en="DataForge data flow" data-es="Flujo de datos de DataForge">DataForge data flow</h2>
-    <p class="rv" style="color:var(--mut);font-size:14.5px;margin-bottom:24px" data-en="From the business's Excel files to a self-updating cloud dashboard — fully automated." data-es="De los Excel del negocio a un dashboard cloud que se actualiza solo — totalmente automatizado.">From the business's Excel files to a self-updating cloud dashboard — fully automated.</p>
+    <p class="rv intro" data-en="From the business's Excel files to a self-updating cloud dashboard — fully automated." data-es="De los Excel del negocio a un dashboard cloud que se actualiza solo — totalmente automatizado.">From the business's Excel files to a self-updating cloud dashboard — fully automated.</p>
     <div class="flow rv">
       <div class="node"><div class="nt">Excel</div><div class="nd">SharePoint</div></div>
       <span class="ar">→</span>
@@ -400,7 +266,7 @@
   <div class="wrap">
     <span class="tag rv">06 — <span data-en="Contact" data-es="Contacto">Contact</span></span>
     <h2 class="rv" data-en="Let's talk" data-es="Hablemos">Let's talk</h2>
-    <p class="rv" style="color:var(--body);max-width:560px" data-en="Open to remote Cloud & Data roles and consulting projects." data-es="Abierto a roles remotos de Cloud Infrastructure y proyectos de consultoría.">Open to remote Cloud & Data roles and consulting projects.</p>
+    <p class="rv contact-note" data-en="Open to remote Cloud & Data roles and consulting projects." data-es="Abierto a roles remotos de Cloud Infrastructure y proyectos de consultoría.">Open to remote Cloud & Data roles and consulting projects.</p>
     <div class="cta rv">
       <a class="btn primary" href="mailto:juandyb99@gmail.com">juandyb99@gmail.com</a>
       <a class="btn" href="https://www.linkedin.com/in/juanberrioo" target="_blank">LinkedIn</a>
@@ -412,35 +278,6 @@
 <footer>
     <p>© 2024 Juan Berrio | MIT License</p><div class="wrap">© <span id="yr"></span> Juan Berrio · Cloud & Data Engineer · Bogotá, Colombia</div></footer>
 
-<script>
-function setLang(l){
-  document.documentElement.lang=l;
-  document.querySelectorAll('[data-en]').forEach(function(el){
-    var v=el.getAttribute('data-'+l); if(v!==null) el.innerHTML=v;
-  });
-  document.getElementById('bEN').classList.toggle('on',l==='en');
-  document.getElementById('bES').classList.toggle('on',l==='es');
-  try{localStorage.setItem('lang',l)}catch(e){}
-}
-// project tabs
-function showTab(i){
-  var tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
-  tabs.forEach(function(t,j){t.classList.toggle('on',j===i)});
-  panels.forEach(function(p,j){p.classList.toggle('show',j===i)});
-}
-// scroll progress
-var prog=document.getElementById('prog');
-addEventListener('scroll',function(){
-  var h=document.documentElement,sc=h.scrollTop/(h.scrollHeight-h.clientHeight);
-  prog.style.width=(sc*100)+'%';
-});
-// reveal
-var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
-document.querySelectorAll('.rv').forEach(function(el){io.observe(el)});
-// close mobile menu on click
-document.querySelectorAll('#links a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('links').classList.remove('open')})});
-document.getElementById('yr').textContent=new Date().getFullYear();
-(function(){var s='en';try{s=localStorage.getItem('lang')||'en'}catch(e){} if(s!=='en')setLang(s)})();
-</script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>
