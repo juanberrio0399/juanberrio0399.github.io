@@ -1,6 +1,7 @@
 # juanberrio0399.github.io
 
 [![Lighthouse CI](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/juanberrio0399/juanberrio0399.github.io/badge)](https://scorecard.dev/viewer/?uri=github.com/juanberrio0399/juanberrio0399.github.io)
 
 Interactive portfolio of **Juan Berrio** — Cloud & Data Engineer.
 
@@ -20,11 +21,13 @@ or exists but is not wired in yet, is drawn with a dashed border and says so.
 
 ```mermaid
 flowchart LR
-  PR["Pull request"] --> LH
-  subgraph CI["GitHub Actions · Lighthouse CI (pull requests and main)"]
+  PR["Pull request"] --> HR
+  subgraph CI["GitHub Actions · every action pinned by commit SHA"]
     direction TB
     HR["Harden-Runner<br/>egress audit"] --> LH["Lighthouse, 3 runs<br/>accessibility · best practices · SEO ≥ 0.9"]
+    HR --> SC["OpenSSF Scorecard<br/>weekly + main · SARIF"]
   end
+  SC --> CS["Code scanning alerts<br/>Security tab"]
   LH -->|"checks pass → merge"| MAIN["main branch"]
   MAIN --> PAGES["GitHub Pages<br/>deploy from branch, no build step"]
   PAGES --> USER["Visitor's browser<br/>Content-Security-Policy via meta tag"]
@@ -102,6 +105,13 @@ flowchart LR
   classDef planned stroke-dasharray: 5 5
   class BUCKET planned
 ```
+
+## 🔒 Security
+
+Actions are pinned by commit SHA, workflows run with least-privilege `permissions:` and
+Dependabot opens one grouped pull request a week so those pins do not go stale. OpenSSF
+Scorecard scores the supply-chain posture weekly and uploads its SARIF to code scanning.
+How to report a vulnerability: [SECURITY.md](SECURITY.md).
 
 ## 🔮 Roadmap Técnico
 

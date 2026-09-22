@@ -1,0 +1,18 @@
+version: 2
+updates:
+  # Las acciones están fijadas por SHA de commit (no por tag), así que la única forma
+  # de que no se queden viejas es que Dependabot abra el PR que mueve el SHA y el
+  # comentario de versión. Un solo PR agrupado por semana para no hacer ruido.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+    groups:
+      github-actions:
+        patterns:
+          - '*'
+    commit-message:
+      prefix: ci
+    labels:
+      - dependencies
