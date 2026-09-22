@@ -6,12 +6,15 @@
 set -eu
 
 VERSION=1.32.0
+# Exact version on purpose: this bundler produces the file served to visitors, so a
+# range (0.25) would let two rebuilds emit different bytes.
+ESBUILD_VERSION=0.25.12
 ROOT=$(cd "$(dirname "$0")/../.." && pwd)
 TMP=$(mktemp -d)
 cd "$TMP"
 
 npm init -y >/dev/null
-npm install --no-audit --no-fund "@duckdb/duckdb-wasm@$VERSION" esbuild@0.25 >/dev/null
+npm install --no-audit --no-fund "@duckdb/duckdb-wasm@$VERSION" "esbuild@$ESBUILD_VERSION" >/dev/null
 printf "export { AsyncDuckDB, VoidLogger, selectBundle } from '@duckdb/duckdb-wasm';\n" > entry.mjs
 npx esbuild entry.mjs --bundle --format=esm --minify --legal-comments=eof --target=es2020 \
   --outfile="$ROOT/assets/vendor/duckdb-wasm/duckdb-api.js"
