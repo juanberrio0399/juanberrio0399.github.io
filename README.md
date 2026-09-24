@@ -130,11 +130,10 @@ It rewrites `assets/vendor/duckdb-wasm/duckdb-api.js` and prints the four SHA-38
 into the `SRI` map in `assets/js/playground.js`; `ENGINE_VERSION` there and the versions in
 `THIRD_PARTY_NOTICES.txt` have to move in the same commit.
 
-Run the quality gate the way CI does (needs Chrome):
-
-```sh
-npx --yes @lhci/cli autorun --config=.lighthouserc.json
-```
+There is no local command for the quality gate. `npx @lhci/cli autorun` does run the audits on
+Windows, but chrome-launcher then fails to delete its own temp directory (`EPERM`) and the run exits
+non-zero after the fact, so the numbers that count are the ones from the Lighthouse job on the pull
+request — its log links a full HTML report.
 
 ## Decisions and limits
 
