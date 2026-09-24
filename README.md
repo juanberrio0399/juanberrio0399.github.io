@@ -3,116 +3,192 @@
 [![Lighthouse CI](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/juanberrio0399/juanberrio0399.github.io/badge)](https://scorecard.dev/viewer/?uri=github.com/juanberrio0399/juanberrio0399.github.io)
 
-Interactive portfolio of **Juan Berrio** — Cloud & Data Engineer.
+Source of <https://juanberrio0399.github.io> — the portfolio of Juan Berrio, Cloud & Data Engineer.
 
-🔗 Live: https://juanberrio0399.github.io
+## What this is
 
-Static site (HTML + CSS + vanilla JS): project tabs, scroll-reveal animations, a print-to-PDF
-version for recruiters and an EN/ES language toggle. No build step — served directly by GitHub Pages.
+A three-page static site (portfolio, SQL playground, 404) written in HTML, CSS and vanilla
+JavaScript, served by GitHub Pages straight from `main`. There is no framework, no bundler and no
+build step: what is committed is what is served.
 
-## 🏗️ Architecture (diagrams as code)
+Two things it has to do beyond looking presentable:
 
-The diagrams below are [Mermaid](https://mermaid.js.org/) source that GitHub renders natively, so they
-live next to the code, are reviewed in pull requests like any other change and never go stale as
-committed images. Each one describes what the project actually runs today; anything that is planned,
-or exists but is not wired in yet, is drawn with a dashed border and says so.
+- **Answer a recruiter in one page.** EN/ES toggle, project tabs, and a print stylesheet so
+  `Download Portfolio (PDF)` is just `window.print()` — no PDF to keep in sync with the site.
+- **Show the work instead of describing it.** [`playground.html`](playground.html) runs real SQL
+  over a snapshot of Juan's public GitHub activity using DuckDB-WASM, in the visitor's browser.
+  It is the same local-first pattern used in the DataForge dashboards, small enough to read.
 
-### This site
+## How it works
+
+### Site and delivery
 
 ```mermaid
 flowchart LR
   PR["Pull request"] --> HR
-  subgraph CI["GitHub Actions · every action pinned by commit SHA"]
+  subgraph CI["GitHub Actions - every action pinned by commit SHA"]
     direction TB
-    HR["Harden-Runner<br/>egress audit"] --> LH["Lighthouse, 3 runs<br/>accessibility · best practices · SEO ≥ 0.9"]
-    HR --> SC["OpenSSF Scorecard<br/>weekly + main · SARIF"]
+    HR["Harden-Runner<br/>egress audit"] --> LH["Lighthouse CI, 3 runs<br/>serves the repo folder itself"]
+    HR --> SC["OpenSSF Scorecard<br/>weekly + push to main"]
   end
   SC --> CS["Code scanning alerts<br/>Security tab"]
-  LH -->|"checks pass → merge"| MAIN["main branch"]
-  MAIN --> PAGES["GitHub Pages<br/>deploy from branch, no build step"]
-  PAGES --> USER["Visitor's browser<br/>Content-Security-Policy via meta tag"]
-  MAIN -.-> TF["Terraform · DNS and security<br/>(planned)"]
-  classDef planned stroke-dasharray: 5 5
-  class TF planned
+  LH -->|"required check 'lighthouse' passes"| MAIN["main branch"]
+  MAIN --> PAGES["GitHub Pages<br/>deploy from branch, root, no build"]
+  PAGES --> USER["Visitor's browser<br/>CSP delivered in a meta tag"]
 ```
 
-### DataForge — Excel to a serverless dashboard
+Pages is configured as *deploy from branch* (`main`, `/`), so a merge is the deploy. `.nojekyll`
+switches off Jekyll processing, which would otherwise ignore any path starting with an underscore
+and add a build step for nothing.
 
-Client code is private; this is the anonymized architecture described in the
-[case study](https://github.com/juanberrio0399/portfolio/blob/main/case-studies/01-dataforge-customs-reconciliation_EN.md).
+Pages cannot send response headers, so the Content-Security-Policy travels in a
+`<meta http-equiv>` tag in every page. The base policy is `default-src 'none'` plus the few hosts
+actually used (Google Fonts for CSS and font files). `playground.html` ships a wider policy of its
+own because WebAssembly needs it — see below.
+
+### Playground
 
 ```mermaid
-flowchart LR
-  XL["Business Excel files<br/>SharePoint / OneDrive"]
-
-  subgraph HEAVY["Heavy path · on-premises PC, Task Scheduler 3×/day"]
+flowchart TB
+  Q["Visitor writes SQL and hits Run"] --> FIRST{"First query<br/>of the session?"}
+  FIRST -->|"no"| EXEC
+  FIRST -->|"yes"| BOOT
+  subgraph BOOT["One-time boot (~7 MB, only on demand)"]
     direction TB
-    CAT["catalog.json<br/>modified time per file"] -.->|"only changed files"| RD
-    RD["readers.py<br/>parallel Excel read"] --> TR["transforms.py<br/>cleaning · typing · join keys"]
-    TR --> WR["writers.py<br/>incremental dedup → Parquet"]
-    WR --> WH[("DuckDB warehouse<br/>one view per source")]
+    API["assets/vendor/duckdb-wasm/duckdb-api.js<br/>self-hosted JS API"] --> CDN
+    CDN["jsDelivr: worker script + .wasm<br/>fetched with SHA-384 integrity pins"] --> BLOB["blob: URLs -> Web Worker"]
+    BLOB --> ARROW["fetch 5 .arrow files<br/>insertArrowFromIPCStream"]
   end
-
-  subgraph LIGHT["Light path · fully in the cloud"]
-    direction TB
-    PA["Power Automate<br/>detects file changes"] --> WK["Cloudflare Worker<br/>validates and stores the file"]
-    WK -->|"workflow_dispatch"| GA["GitHub Actions<br/>Python ingestion job"]
-  end
-
-  XL --> RD
-  XL --> PA
-  WH -->|"Parquet sync"| R2[("Cloudflare R2<br/>raw files and Parquet")]
-  WK -->|"raw file"| R2
-  R2 -.->|"reads raw files"| GA
-  GA -->|"Parquet"| R2
-
-  subgraph SERVE["Serving · Cloudflare Pages behind Cloudflare Access"]
-    direction TB
-    FN["Pages Function<br/>R2 binding"] --> APP["React + DuckDB-WASM<br/>SQL runs in the browser"]
-  end
-  R2 --> FN
+  ARROW --> EXEC["conn.query(sql) in the Worker"]
+  EXEC --> TBL["Results rendered into a table<br/>row cap chosen in the UI"]
 ```
 
-### Serverless RAG Assistant
+Nothing about the engine loads with the page: the 7 MB download happens on the first `Run`, so a
+visitor who never runs a query pays for a normal HTML page. The worker and `.wasm` come from
+jsDelivr but are fetched with `fetch(..., { integrity })` against SHA-384 hashes pinned in
+[`assets/js/playground.js`](assets/js/playground.js), then started from `blob:` URLs — a swapped
+CDN file fails to load instead of running. Known DuckDB extensions are disabled
+(`autoinstall_known_extensions = false`) so a query can never pull code from a third host at
+runtime.
 
-Source: [serverless-rag-assistant](https://github.com/juanberrio0399/serverless-rag-assistant) — a single
-Cloudflare Worker whose bindings are declared in `wrangler.jsonc`.
+The data is five Apache Arrow IPC files (~28 KB in total: 7 repos, 12 language rows, 77 commit-days,
+154 pull requests, 1 snapshot row taken 2026-09-15). Arrow rather than Parquet because DuckDB-WASM
+ingests Arrow natively, while Parquet would make the browser fetch the parquet extension at runtime.
 
-```mermaid
-flowchart LR
-  subgraph INGEST["POST /ingest · /ingest-url (Bearer token)"]
-    direction TB
-    DOC["Text, or a public URL"] -->|"/ingest-url"| JINA["Jina Reader<br/>page → Markdown"]
-    DOC -->|"/ingest"| CHUNK["Chunking<br/>800 chars · max 100 chunks"]
-    JINA --> CHUNK
-    CHUNK --> EMB["Workers AI<br/>bge-base-en-v1.5 embeddings"]
-  end
+Architecture diagrams for the projects the site talks about (DataForge, the Serverless RAG
+Assistant) live in [docs/project-architecture.md](docs/project-architecture.md).
 
-  subgraph ASK["POST /ask"]
-    direction TB
-    Q["Question"] --> QEMB["Workers AI<br/>embed the question"]
-    RR["Workers AI<br/>bge-reranker-base"] --> MODE{"mode"}
-    MODE -->|"fast (default)"| FAST["llama-3.3-70b-instruct-fp8-fast<br/>optional Groq fallback"]
-    MODE -->|"reasoning"| R1["deepseek-r1-distill-qwen-32b"]
-  end
+## Repository structure
 
-  EMB --> VEC[("Vectorize<br/>rag-index")]
-  QEMB --> VEC
-  VEC -->|"top candidates"| RR
-  RL["Rate limiting binding<br/>20 requests / 60 s per IP"] -.-> INGEST
-  RL -.-> ASK
-  TFR["Terraform"] -.->|"provisions"| BUCKET[("R2 bucket<br/>rag-source-docs · not bound yet")]
-  classDef planned stroke-dasharray: 5 5
-  class BUCKET planned
+| Path | What lives there |
+|---|---|
+| `index.html` | The portfolio itself: profile, skills, project tabs, contact. Includes JSON-LD and the per-page CSP. |
+| `playground.html` | The SQL playground page: presets, editor, table schemas, and its own wider CSP. |
+| `404.html` | Served by Pages for any unknown path; uses root-absolute asset paths for that reason. |
+| `assets/js/main.js` | Portfolio behaviour: language toggle, project tabs, scroll reveal, print. No inline handlers, so the CSP needs no `'unsafe-inline'`. |
+| `assets/js/playground.js` | Engine boot, SRI pins, preset queries, EN/ES messages, result rendering. |
+| `assets/css/` | `main.css` (site + print rules), `playground.css`, `404.css`. |
+| `assets/vendor/duckdb-wasm/` | Self-hosted DuckDB-WASM JS API (~215 KB, built by the vendor script) and its third-party notices. |
+| `assets/data/playground/*.arrow` | The committed snapshot the playground queries. |
+| `scripts/playground/build_data.py` | Rebuilds those Arrow files from the public GitHub REST API. |
+| `scripts/playground/vendor_duckdb.sh` | Rebuilds `duckdb-api.js` and prints the SHA-384 hashes to paste into `playground.js`. |
+| `.github/workflows/` | `lighthouse.yml` (quality gate on every PR), `scorecard.yml` (supply-chain score). |
+| `.github/dependabot.yml` | Weekly grouped bump of the pinned action SHAs. |
+| `.lighthouserc.json` | Which URLs Lighthouse audits and the score thresholds it enforces. |
+| `SECURITY.md` | Scope of the project and how to report a vulnerability. |
+| `robots.txt`, `sitemap.xml`, `og-image.png`, `favicon.svg`, `.nojekyll` | Indexing, social preview and the Jekyll opt-out. |
+
+## Running it locally
+
+Any static file server works; the pages use relative paths (`404.html` does not, by design).
+
+```sh
+python -m http.server 8000
+# http://localhost:8000/  and  http://localhost:8000/playground.html
 ```
 
-## 🔒 Security
+Opening the files with `file://` does not work: `playground.js` is an ES module and the Arrow
+fetches are same-origin.
 
-Actions are pinned by commit SHA, workflows run with least-privilege `permissions:` and
-Dependabot opens one grouped pull request a week so those pins do not go stale. OpenSSF
-Scorecard scores the supply-chain posture weekly and uploads its SARIF to code scanning.
-How to report a vulnerability: [SECURITY.md](SECURITY.md).
+Refresh the playground snapshot (writes into `assets/data/playground/`):
 
-## 🔮 Roadmap Técnico
+```sh
+pip install duckdb pyarrow
+GITHUB_TOKEN=$(gh auth token) python scripts/playground/build_data.py
+```
 
-Próxima fase: Migración a despliegue automatizado mediante GitHub Actions y gestión de DNS/Seguridad mediante Terraform para reflejar prácticas reales de Cloud Engineering.
+The token is optional — it only raises the GitHub API rate limit. The run above took a few minutes
+and printed a row count per table.
+
+Re-vendor the DuckDB-WASM API after bumping the engine version (needs `npm` and `openssl`):
+
+```sh
+sh scripts/playground/vendor_duckdb.sh
+```
+
+It rewrites `assets/vendor/duckdb-wasm/duckdb-api.js` and prints the four SHA-384 lines to copy
+into the `SRI` map in `assets/js/playground.js`; `ENGINE_VERSION` there and the versions in
+`THIRD_PARTY_NOTICES.txt` have to move in the same commit.
+
+There is no local command for the quality gate. `npx @lhci/cli autorun` does run the audits on
+Windows, but chrome-launcher then fails to delete its own temp directory (`EPERM`) and the run exits
+non-zero after the fact, so the numbers that count are the ones from the Lighthouse job on the pull
+request — its log links a full HTML report.
+
+## Decisions and limits
+
+- **No framework, no build step.** The site is a few hundred lines of markup; a bundler would add a
+  toolchain to maintain and a class of deploy failures for no gain. It also keeps the Pages setup
+  at *deploy from branch*, so there is no way for a "built" site to drift from the sources.
+- **CSP in a meta tag.** Not as strong as a header (it cannot carry `frame-ancestors` or a report
+  endpoint), but it is the only option Pages offers, and it still blocks inline script, unexpected
+  hosts and form posts. Adding an external asset means editing the policy in every page.
+- **The engine loads on the first query, not on page load.** The playground exists to be tried, not
+  to be downloaded; deferring the 7 MB is what keeps the page's Lighthouse performance score in the
+  same range as the portfolio page.
+- **The engine is pinned and integrity-checked rather than fully self-hosted.** The `.wasm` files
+  are too large to keep in Git for a Pages site; hashes give the same guarantee without the weight.
+  Only the small JS API is committed.
+- **The snapshot is committed data, not a live API call.** The playground shows what the repository
+  contains; it does not call GitHub at runtime, so it works offline once the engine is cached and
+  cannot leak a token.
+- **What this project is not.** No backend, no database, no analytics, no cookies, no forms and no
+  user input leaving the browser. Nothing here is a general-purpose SQL service: the dataset is
+  fixed at ~28 KB and lives entirely in the visitor's memory.
+
+## Operation
+
+| What runs | When | Where its output lands |
+|---|---|---|
+| Lighthouse CI | every PR, every push to `main`, manual dispatch | The check named `lighthouse`, plus an uploaded HTML report (temporary public storage) |
+| OpenSSF Scorecard | Tuesdays 06:17 UTC, pushes to `main`, PRs touching `.github/**` | SARIF in the Security tab (code scanning) and the badge above |
+| Dependabot | Tuesdays, one grouped PR | A `ci:` PR that moves the pinned action SHAs and their version comments |
+| GitHub Pages | on every push to `main` | <https://juanberrio0399.github.io> |
+
+`main` is protected: a pull request cannot merge until the `lighthouse` check passes, and the
+branch must be up to date first.
+
+When something fails:
+
+- **Lighthouse red.** Accessibility, best practices and SEO are hard failures below 0.9;
+  performance only warns. Open the report linked in the job log — it names the failing audit.
+  Thresholds live in `.lighthouserc.json`, the audited URLs too.
+- **The playground stops loading.** Almost always the pinned engine: if jsDelivr serves a file whose
+  hash does not match the `SRI` map, the fetch fails and the page shows the "integrity check"
+  message. Re-run the vendor script for the pinned version and compare hashes before changing them.
+- **Scorecard drops.** The score reacts to unpinned actions, missing permissions blocks and stale
+  dependencies. The SARIF entry in the Security tab points at the file and line.
+
+## Current state and next steps
+
+Working: both pages, the playground end to end (verified locally against the committed snapshot),
+the two CI workflows, Dependabot, and the security policy.
+
+Not done yet:
+
+- The snapshot is refreshed by hand. Until `build_data.py` runs on a schedule, the playground data
+  ages — the `snapshot` table is there so a visitor can see exactly how old it is.
+- DNS and security settings are managed in the GitHub UI. Moving them to Terraform is the intended
+  next step and is the only reason a deploy workflow would be worth adding.
+- Open ideas tracked as issues: scroll-driven CSS animations (#3), the Speculative Rules API (#34),
+  and a larger remote-attach playground (#36).

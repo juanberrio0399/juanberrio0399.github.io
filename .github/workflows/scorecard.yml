@@ -1,16 +1,15 @@
 name: OpenSSF Scorecard
 
-# Mide la postura de seguridad del repo contra los checks de OpenSSF (pinning de
-# dependencias, permisos de token, workflows peligrosos, política de seguridad...).
-# El resultado se publica en la API de Scorecard (badge del README) y se sube como
-# SARIF a code scanning, así los hallazgos quedan en la pestaña Security.
+# Scores the repository against the OpenSSF checks (pinned dependencies, token permissions,
+# dangerous workflow patterns, security policy). The result feeds the Scorecard API behind the
+# README badge and is uploaded as SARIF, so findings show up in the Security tab.
 on:
-  # Barrido semanal: el ecosistema cambia aunque el repo no.
+  # Weekly: the checks and the ecosystem move even when this repository does not.
   schedule:
     - cron: '17 6 * * 2'
   push:
     branches: [ main ]
-  # Si un PR toca la configuración de CI/seguridad, se valida antes de entrar a main.
+  # A PR that touches CI or security config is scored before it reaches main.
   pull_request:
     paths:
       - '.github/workflows/**'
@@ -24,13 +23,13 @@ jobs:
     name: Scorecard analysis
     runs-on: ubuntu-latest
     permissions:
-      # Subir el SARIF a code scanning.
+      # Upload the SARIF to code scanning.
       security-events: write
-      # Token OIDC que necesita publish_results para firmar el resultado publicado.
+      # OIDC token: publish_results signs the published result with it.
       id-token: write
       contents: read
     steps:
-      # Mismo primer paso que Lighthouse CI: registra el egress del job en modo audit.
+      # Same first step as Lighthouse CI: record the job's egress in audit mode.
       - name: Harden the runner
         uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
@@ -46,8 +45,8 @@ jobs:
         with:
           results_file: results.sarif
           results_format: sarif
-          # Publicar solo lo que corre sobre main: el score oficial del repo no debe
-          # salir de una rama de trabajo. En PR el análisis igual corre y reporta.
+          # Only runs on main publish: the repository's public score must not come from a
+          # working branch. On a PR the analysis still runs and reports locally.
           publish_results: ${{ github.event_name != 'pull_request' }}
 
       - name: Upload SARIF artifact
