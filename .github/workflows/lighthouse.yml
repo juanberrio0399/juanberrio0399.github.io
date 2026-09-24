@@ -1,7 +1,8 @@
 name: Lighthouse CI
 
-# Audita el sitio servido desde los archivos del repo (no la URL en vivo), así un PR
-# muestra su propio puntaje antes de llegar a main. Umbrales en .lighthouserc.json.
+# Audits the site served from the repository folder, not the live URL, so a pull request scores
+# its own changes before they reach main. URLs and thresholds live in .lighthouserc.json.
+# `lighthouse` is the required check on main: if this job fails the PR cannot merge.
 on:
   push:
     branches: [ main ]
@@ -15,8 +16,8 @@ jobs:
   lighthouse:
     runs-on: ubuntu-latest
     steps:
-      # Primer paso siempre: registra a qué dominios sale el job (egress) y detecta
-      # manipulación de archivos. En modo audit no bloquea nada todavía.
+      # Always first: records which hosts the job talks to and flags file tampering.
+      # Audit mode only reports; switching it to block needs that egress list first.
       - name: Harden the runner
         uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
         with:
