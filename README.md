@@ -1,5 +1,7 @@
 # juanberrio0399.github.io
 
+> Current status, what was done and what is left: **[PLAN.md](PLAN.md)**.
+
 [![Lighthouse CI](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/juanberrio0399/juanberrio0399.github.io/badge)](https://scorecard.dev/viewer/?uri=github.com/juanberrio0399/juanberrio0399.github.io)
 
