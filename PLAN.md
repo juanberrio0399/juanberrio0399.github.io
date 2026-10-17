@@ -26,7 +26,7 @@ The portfolio of Juan Berrio, Cloud & Data Engineer. Its job is to answer a recr
 
 ## How it should work
 
-- Every number on the site matches the CV and LinkedIn (today: **30M+**).
+- Every number on the site matches the CV and LinkedIn (today: **36M+**, measured 2026-10-16 from the production Parquet files).
 - Every project card describes the stack the project really runs.
 - Lighthouse stays green; the playground works offline after the first load.
 
