@@ -1,0 +1,24 @@
+/* Case study pages: long-form reading on top of main.css. Only one language block shows at a time. */
+.cs{max-width:var(--maxw);margin:0 auto;padding:92px 22px 40px}
+.cs-kicker{font-size:12.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+html[lang="en"] .cs-es,html[lang="es"] .cs-en{display:none}
+.cs h1{font-size:clamp(26px,4.4vw,36px);line-height:1.18;color:var(--ink);letter-spacing:-.02em;margin-bottom:18px}
+.cs h2{font-size:22px;color:var(--ink);margin:34px 0 12px;letter-spacing:-.01em}
+.cs h3{font-size:17px;color:var(--ink);margin:24px 0 8px}
+.cs p,.cs li{font-size:16px;line-height:1.7}
+.cs p{margin:0 0 14px}
+.cs ul,.cs ol{margin:0 0 16px 22px}
+.cs li{margin-bottom:6px}
+.cs strong{color:var(--ink)}
+.cs a{color:var(--accent)}
+.cs blockquote{background:var(--bg2);border-left:3px solid var(--accent);border-radius:8px;padding:14px 18px;margin:0 0 26px}
+.cs blockquote p{margin:0 0 4px;font-size:14.5px}
+.cs pre{background:#0f172a;color:#e2e8f0;border-radius:10px;padding:16px 18px;overflow-x:auto;margin:0 0 18px;font-size:12.5px;line-height:1.5}
+.cs code{font-family:ui-monospace,Consolas,monospace;font-size:.9em}
+.cs :not(pre)>code{background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.cs table{width:100%;border-collapse:collapse;margin:0 0 20px;font-size:14.5px;display:block;overflow-x:auto}
+.cs th,.cs td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.cs th{color:var(--ink);background:var(--bg2)}
+.cs-sep{border-top:1px solid var(--line);padding-top:30px;margin-top:46px!important}
+.cs-back{margin-top:36px}
+@media print{.cs{padding-top:0}nav{display:none}}

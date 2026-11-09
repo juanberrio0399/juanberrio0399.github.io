@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; base-uri 'self'; form-action 'none'" />
+<title>Case study: DataForge — Juan Berrio</title>
+<meta name="description" content="How a serverless data platform reconciles customs taxes package by package: 36M+ records, Python + DuckDB + Parquet, Cloudflare R2 and DuckDB-WASM. Anonymized case study by Juan Berrio." />
+<link rel="canonical" href="https://juanberrio0399.github.io/case-study-dataforge.html" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Case study: DataForge — Juan Berrio" />
+<meta property="og:description" content="Package-level customs tax reconciliation on a ~$0 serverless stack." />
+<meta property="og:url" content="https://juanberrio0399.github.io/case-study-dataforge.html" />
+<meta property="og:image" content="https://juanberrio0399.github.io/og-image.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/case-study.css" />
+</head>
+<body>
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="./">Juan <span>Berrio</span></a>
+    <div class="nav-r">
+      <a class="nav-back" href="./#projects" data-en="← Portfolio" data-es="← Portafolio">← Portfolio</a>
+      <div class="lang">
+        <button id="bEN" class="on">EN</button>
+        <button id="bES">ES</button>
+      </div>
+    </div>
+  </div>
+</nav>
+<main class="cs">
+  <p class="cs-kicker" data-en="Case study" data-es="Caso de estudio">Case study</p>
+  <section id="case-study" lang="en" class="cs-en">
+    <h1>DataForge — Package-Level Customs Tax Reconciliation</h1>
+    <blockquote>
+<p><strong>Stack:</strong> Python · DuckDB · Parquet · Cloudflare R2/Pages · React + DuckDB-WASM · GitHub Actions · Power Automate<br><strong>Role:</strong> End-to-end design, development and operation (solo)<br><strong>Status:</strong> In production — one-click run, alerts when data goes stale  </p>
+<p><em>Case study based on a real system. Client name and data anonymized.</em></p>
+</blockquote>
+<h2 id="en-problem">Problem</h2>
+<p>An international courier operation clears thousands of customs shipments per month. Each shipment owes a customs tax to the tax authority and, in parallel, the e-commerce marketplace must refund that tax. The problem: <strong>nobody knew, shipment by shipment, what was paid and what was still pending refund.</strong></p>
+<p>The root cause is technical: the settlement file identifies each shipment with one number (<code>child_waybill</code>), but the authority payment and the marketplace refund identify it with a different code. <strong>The two worlds had no common key.</strong> Control was done manually, per master waybill, in Excel — slow, error-prone, and with no real visibility at the level that matters: the individual shipment.</p>
+<h2 id="en-context">Context</h2>
+<ul>
+<li><strong>Sources:</strong> 5 different business-generated Excel files (settlements, manifests, marketplace payments, authority-payment consolidation), continuously updated in SharePoint.</li>
+<li><strong>Volume:</strong> 36M+ accumulated records from 13,000+ Excel files; thousands of new shipments per run.</li>
+<li><strong>Constraints:</strong> zero infrastructure budget, had to run on the operation&#39;s PC without disrupting daily work, and the result had to be queryable by leadership with nothing to install.</li>
+</ul>
+<h2 id="en-solution">Solution</h2>
+<p>An ETL pipeline that turns the business&#39;s Excel files into a <strong>queryable analytical warehouse</strong> and ships a <strong>serverless cloud dashboard</strong> that answers, per shipment, the two questions that matter: <em>is it paid to the authority?</em> and <em>has the marketplace refunded it?</em></p>
+<p>The modeling insight: <strong>the manifest is the only document that contains both identifiers</strong>, so it&#39;s used as a bridge to chain the settlement to the payments:</p>
+<pre><code>settlements.child_waybill → manifests → package_no
+        → authority_tax_consolidation ⇒  paid to authority
+        → marketplace_payments        ⇒  refunded
+</code></pre>
+<h2 id="en-architecture">Architecture</h2>
+<pre><code>  Business Excel files (SharePoint)
+        │
+        │  readers.py    parallel scan + read (calamine/openpyxl)
+        ▼
+   Raw DataFrame
+        │
+        │  transforms.py cleaning, typing, join-key generation
+        ▼
+   Clean DataFrame
+        │
+        │  writers.py    merge + incremental dedup → consolidated Parquet
+        ▼
+  data/processed/&lt;type&gt;/data_YYYYMMDD.parquet
+        │
+        │  warehouse.py  CREATE OR REPLACE VIEW per type (DuckDB)
+        ▼
+  warehouse.duckdb   ──run_daily──►  Cloudflare R2  ──►  React + DuckDB-WASM (Pages)
+        ▲                                                    (leadership dashboard)
+        │
+   catalog.json (incremental tracker: mtime per file → reprocess only what changed)
+</code></pre>
+<p><strong>Key decisions</strong></p>
+<ul>
+<li><strong>DuckDB over Postgres:</strong> columnar analytics, zero server, portable files. Ideal for a single operator on a zero budget.</li>
+<li><strong>Parquet as the intermediate layer:</strong> columnar compression + incremental dedup; the warehouse rebuilds in seconds.</li>
+<li><strong>Cloudflare R2 + DuckDB-WASM instead of a backend:</strong> the dashboard queries the Parquet files <strong>directly in the browser</strong>. No API, no cloud database, no server to maintain or pay for.</li>
+<li><strong>Declarative configuration:</strong> sources, types and relationships live in a single config file, separate from pipeline logic.</li>
+<li><strong>Catalog-based incremental ingestion:</strong> each Excel&#39;s modification date is stored; every run only reprocesses what changed.</li>
+</ul>
+<h2 id="en-tech-stack">Tech stack</h2>
+<ul>
+<li><strong>Ingestion:</strong> Python, parallel Excel reading (calamine/openpyxl)</li>
+<li><strong>Processing:</strong> Pandas, ~4,100 lines in a layered architecture (readers → transforms → writers)</li>
+<li><strong>Storage:</strong> Parquet (intermediate) + DuckDB (view warehouse)</li>
+<li><strong>Presentation:</strong> React + DuckDB-WASM on Cloudflare Pages</li>
+<li><strong>Orchestration:</strong> one-click run that checks the machine first + GitHub Actions freshness check (alert at 30 h); sync to Cloudflare R2</li>
+</ul>
+<h2 id="en-results">Results</h2>
+<ul>
+<li><strong>Shipment-level visibility</strong> where there was only manual per-master control: for every shipment you know whether it&#39;s paid to the authority and whether it&#39;s been refunded.</li>
+<li><strong>Automated reconciliation of 5 sources</strong> that were previously cross-checked by hand in Excel.</li>
+<li><strong>One-click run that checks the machine first</strong>, with incremental ingestion (only processes what changed) and per-run logging.</li>
+<li><strong>Infrastructure cost ≈ $0:</strong> local warehouse + Cloudflare free tier; dashboard with no server to maintain.</li>
+<li><strong>Production-hardened:</strong> UTF-8 encoding handling under Windows cron and failure isolation (a failing cloud step doesn&#39;t bring down the local run).</li>
+</ul>
+<h2 id="en-lessons-learned">Lessons learned</h2>
+<ul>
+<li><strong>Modeling the bridge key was 80% of the value.</strong> The challenge wasn&#39;t tooling — it was discovering that the manifest was the only link between the two identifier systems.</li>
+<li><strong>DuckDB + Parquet + Cloudflare is an underrated low-cost analytics stack:</strong> data-warehouse capabilities without the cost or the operations of one.</li>
+<li><strong>Designing for unattended runs changes the code:</strong> logging, idempotency and failure isolation matter as much as the business logic.</li>
+</ul>
+
+  </section>
+  <section id="caso" lang="es" class="cs-es">
+    <h1>DataForge — Conciliación tributaria aduanera, guía a guía</h1>
+    <blockquote>
+<p><strong>Stack:</strong> Python · DuckDB · Parquet · Cloudflare R2/Pages · React + DuckDB-WASM · GitHub Actions · Power Automate<br><strong>Rol:</strong> Diseño, desarrollo y operación end-to-end (1 persona)<br><strong>Estado:</strong> En producción — corre con un clic y avisa si el dato se atrasa  </p>
+<p><em>Case study basado en un sistema real. Nombres de cliente y datos anonimizados.</em></p>
+</blockquote>
+<h2 id="es-problema">Problema</h2>
+<p>Una operación de courier internacional liquida miles de guías aduaneras al mes. Cada guía debe pagar un impuesto aduanero a la autoridad tributaria y, en paralelo, el marketplace de e-commerce debe reembolsar esos impuestos. El problema: <strong>nadie sabía, guía por guía, qué estaba pagado y qué estaba pendiente de reembolso.</strong></p>
+<p>La razón es técnica: la liquidación identifica cada guía con un número (<code>guía_hija</code>), pero el pago a la autoridad y el reembolso del marketplace la identifican con un código distinto. <strong>Los dos mundos no tenían una llave común.</strong> El control se hacía a mano, por master, en Excel — lento, propenso a error y sin visibilidad real al nivel que importa: la guía individual.</p>
+<h2 id="es-contexto">Contexto</h2>
+<ul>
+<li><strong>Fuentes:</strong> 5 archivos Excel distintos generados por el negocio (liquidaciones, manifiestos, pagos del marketplace, consolidado de pagos a la autoridad), actualizados continuamente en SharePoint.</li>
+<li><strong>Volumen:</strong> más de 36M de registros acumulados de más de 13.000 archivos Excel; miles de guías nuevas por corrida.</li>
+<li><strong>Restricciones:</strong> presupuesto cero para infraestructura, debía correr en el PC de la operación sin afectar el trabajo diario, y el resultado tenía que ser consultable por dirección sin instalar nada.</li>
+</ul>
+<h2 id="es-solucion">Solución</h2>
+<p>Un pipeline ETL que convierte los Excel del negocio en un <strong>warehouse analítico consultable</strong> y publica un <strong>dashboard cloud serverless</strong> que responde, por guía, las dos preguntas que importan: <em>¿está pagada a la autoridad?</em> y <em>¿ya la reembolsó el marketplace?</em></p>
+<p>La clave del modelado: <strong>el manifiesto es el único documento que contiene ambos identificadores</strong>, así que se usa como puente para encadenar la liquidación con los pagos:</p>
+<pre><code>liquidaciones.guía_hija → manifiestos → package_no
+        → consolidado_impuesto ⇒  pagado a la autoridad
+        → pagos_marketplace    ⇒  reembolsado
+</code></pre>
+<h2 id="es-arquitectura">Arquitectura</h2>
+<pre><code>  Excel del negocio (SharePoint)
+        │
+        │  readers.py    escaneo + lectura en paralelo (calamine/openpyxl)
+        ▼
+   DataFrame crudo
+        │
+        │  transforms.py limpieza, tipado, generación de llaves de join
+        ▼
+   DataFrame limpio
+        │
+        │  writers.py    merge + dedup incremental → Parquet consolidado
+        ▼
+  data/processed/&lt;tipo&gt;/data_YYYYMMDD.parquet
+        │
+        │  warehouse.py  CREATE OR REPLACE VIEW por tipo (DuckDB)
+        ▼
+  warehouse.duckdb   ──run_daily──►  Cloudflare R2  ──►  React + DuckDB-WASM (Pages)
+        ▲                                                      (dashboard directivo)
+        │
+   catalog.json (tracker incremental: mtime por archivo → reprocesa solo lo que cambió)
+</code></pre>
+<p><strong>Decisiones clave</strong></p>
+<ul>
+<li><strong>DuckDB en vez de Postgres:</strong> analítica columnar, cero servidor, archivos portables. Ideal para un solo operador y presupuesto cero.</li>
+<li><strong>Parquet como capa intermedia:</strong> compresión columnar + dedup incremental; el warehouse se reconstruye en segundos.</li>
+<li><strong>Cloudflare R2 + DuckDB-WASM en vez de un backend:</strong> el dashboard consulta los Parquet <strong>directamente en el navegador</strong>. No hay API, ni base de datos en la nube, ni servidor que mantener o pagar.</li>
+<li><strong>Configuración declarativa:</strong> fuentes, tipos y relaciones viven en un solo archivo de config, separados de la lógica del pipeline.</li>
+<li><strong>Ingesta incremental por catálogo:</strong> se guarda la fecha de modificación de cada Excel; en cada corrida solo se reprocesa lo que cambió.</li>
+</ul>
+<h2 id="es-stack-tecnico">Stack técnico</h2>
+<ul>
+<li><strong>Ingesta:</strong> Python, lectura paralela de Excel (calamine/openpyxl)</li>
+<li><strong>Procesamiento:</strong> Pandas, ~4.100 líneas en arquitectura por capas (readers → transforms → writers)</li>
+<li><strong>Almacenamiento:</strong> Parquet (capa intermedia) + DuckDB (warehouse de vistas)</li>
+<li><strong>Presentación:</strong> React + DuckDB-WASM en Cloudflare Pages</li>
+<li><strong>Orquestación:</strong> Windows Task Scheduler (3x/día) + GitHub Actions; sync a Cloudflare R2</li>
+</ul>
+<h2 id="es-resultados">Resultados</h2>
+<ul>
+<li><strong>Visibilidad guía a guía</strong> donde antes solo había control manual por master: por cada guía se sabe si está pagada a la autoridad y si fue reembolsada.</li>
+<li><strong>Conciliación automatizada de 5 fuentes</strong> que antes se cruzaban a mano en Excel.</li>
+<li><strong>Corre con un clic, revisando antes el equipo</strong>, con ingesta incremental (solo procesa lo que cambió) y logging por corrida.</li>
+<li><strong>Costo de infraestructura ≈ $0:</strong> warehouse local + tier gratuito de Cloudflare; dashboard sin servidor que mantener.</li>
+<li><strong>Robusto en producción:</strong> manejo de encoding UTF-8 bajo cron de Windows y aislamiento de fallos (un paso cloud que falla no tumba la corrida local).</li>
+</ul>
+<h2 id="es-lecciones-aprendidas">Lecciones aprendidas</h2>
+<ul>
+<li><strong>El modelado de la llave puente fue el 80% del valor.</strong> El reto no era técnico de herramientas, sino encontrar que el manifiesto era el único enlace entre los dos sistemas de identificación.</li>
+<li><strong>DuckDB + Parquet + Cloudflare es un stack subestimado</strong> para analítica de bajo costo: capacidades de &quot;data warehouse&quot; sin el costo ni la operación de uno.</li>
+<li><strong>Diseñar para que corra desatendido cambia el código:</strong> logging, idempotencia y aislamiento de fallos importan tanto como la lógica de negocio.</li>
+</ul>
+
+  </section>
+  <section id="overview" lang="en" class="cs-ficha">
+    <h2 class="cs-sep" data-en="Technical overview" data-es="Ficha técnica (en inglés)">Technical overview</h2>
+    <p>ETL pipeline + analytical layer that reconciles an international courier&#39;s customs operation.
+Turns business-generated Excel files into columnar Parquet with incremental dedup, and exposes
+the result as DuckDB views consumed from BI tools, notebooks and a serverless cloud dashboard.</p>
+<blockquote>
+<p>Production system. Client code is private; this page documents the architecture with anonymized details.</p>
+</blockquote>
+<h2 id="ov-architecture">Architecture</h2>
+<pre><code>Excel (SharePoint)
+      │  readers.py     parallel scan + read (calamine/openpyxl)
+      ▼
+  DataFrame
+      │  transforms.py  column cleaning, typing, join-key generation
+      ▼
+  clean DataFrame
+      │  writers.py     merge + incremental dedup → single consolidated Parquet
+      ▼
+  data/processed/&lt;type&gt;/data_YYYYMMDD_HHMMSS.parquet
+      │  warehouse.py   CREATE OR REPLACE VIEW per type
+      ▼
+  warehouse.duckdb   →  Cloudflare R2  →  React + DuckDB-WASM (Cloudflare Pages)
+</code></pre>
+<p>The incremental catalog (<code>catalog.json</code>) stores each Excel&#39;s modification date, so only what
+changed gets reprocessed.</p>
+<h2 id="ov-data-model">Data model</h2>
+<p>5 source tables consolidated and joined through declarative relationships:</p>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Key</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>settlements_a</code></td>
+<td><code>key_mawb</code></td>
+</tr>
+<tr>
+<td><code>settlements_b</code></td>
+<td><code>key_mawb</code></td>
+</tr>
+<tr>
+<td><code>manifests</code></td>
+<td><code>key_mawb</code></td>
+</tr>
+<tr>
+<td><code>payments</code></td>
+<td><code>package_no</code></td>
+</tr>
+<tr>
+<td><code>authority_tax</code></td>
+<td><code>package_no</code></td>
+</tr>
+</tbody></table>
+<p>The <strong>manifest</strong> is the bridge that carries both identifier systems, enabling the
+package-level (1:1) tax reconciliation chain — see the
+<a href="#case-study">case study</a>.</p>
+<h2 id="ov-highlights">Highlights</h2>
+<ul>
+<li>~4,100 lines of Python in a layered architecture (readers → transforms → writers)</li>
+<li>Incremental ingestion + dedup; Parquet columnar storage; DuckDB view warehouse</li>
+<li>Serverless cloud delivery: Cloudflare R2 + Pages, React + DuckDB-WASM, no backend</li>
+<li>One-click run that checks the machine first + GitHub Actions freshness alerts (30 h)</li>
+<li>Production hardening: UTF-8 under cron, per-run logging, failure isolation</li>
+</ul>
+<h2 id="ov-stack">Stack</h2>
+<p><code>Python</code> · <code>Pandas</code> · <code>DuckDB</code> · <code>Parquet</code> · <code>Cloudflare R2/Pages</code> · <code>React + DuckDB-WASM</code> · <code>GitHub Actions</code> · <code>Power Automate</code></p>
+
+  </section>
+  <p class="cs-back"><a href="./#projects" data-en="← Back to projects" data-es="← Volver a proyectos">← Back to projects</a></p>
+</main>
+<footer><p>© <span id="yr">2026</span> Juan Berrio</p></footer>
+<script src="assets/js/case-study.js"></script>
+</body>
+</html>

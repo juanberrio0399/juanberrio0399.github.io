@@ -143,6 +143,7 @@
       <button class="tab">UGPP Shield Pro</button>
       <button class="tab">Hearthwood</button>
       <button class="tab" data-en="RAG Assistant (AI)" data-es="Asistente RAG (IA)">RAG Assistant (AI)</button>
+      <button class="tab" data-en="Secure Container (Docker)" data-es="Contenedor seguro (Docker)">Secure Container (Docker)</button>
     </div>
 
     <div class="proj panel show">
@@ -159,7 +160,7 @@
       </div>
       <div class="tech"><span>Cloudflare R2/Pages</span><span>React</span><span>DuckDB-WASM</span><span>GitHub Actions</span><span>Python</span></div>
       <p class="impact" data-en="<b>Impact:</b> analytics that update themselves, no server to maintain, ~$0 infrastructure." data-es="<b>Impacto:</b> analítica que se actualiza sola, sin servidor que mantener, ~$0 de infraestructura."><b>Impact:</b> analytics that update themselves, no server to maintain, ~$0 infrastructure.</p>
-      <div class="lk"><a href="https://github.com/juanberrio0399/portfolio/blob/main/case-studies/01-dataforge-customs-reconciliation_EN.md" target="_blank" data-en="Read case study →" data-es="Ver case study →">Read case study →</a><a href="playground.html" data-en="Try DuckDB-WASM in your browser →" data-es="Prueba DuckDB-WASM en tu navegador →">Try DuckDB-WASM in your browser →</a></div>
+      <div class="lk"><a href="case-study-dataforge.html" data-en="Read case study →" data-es="Ver case study →">Read case study →</a><a href="playground.html" data-en="Try DuckDB-WASM in your browser →" data-es="Prueba DuckDB-WASM en tu navegador →">Try DuckDB-WASM in your browser →</a></div>
     </div>
 
     <div class="proj panel">
@@ -175,7 +176,7 @@
       </div>
       <div class="tech"><span>Python</span><span>Pandas</span><span>DuckDB</span><span>Parquet</span></div>
       <p class="impact" data-en="<b>Impact:</b> 36M+ records from 13K+ Excel files · package-level reconciliation across 5 sources · 30 h freshness alerts." data-es="<b>Impacto:</b> 36M+ registros de 13K+ archivos Excel · conciliación guía-a-guía sobre 5 fuentes · alerta de frescura a las 30 h."><b>Impact:</b> 36M+ records from 13K+ Excel files · package-level reconciliation across 5 sources · 30 h freshness alerts.</p>
-      <div class="lk"><a href="https://github.com/juanberrio0399/portfolio/blob/main/projects/dataforge/README.md" target="_blank" data-en="Overview →" data-es="Detalle →">Overview →</a></div>
+      <div class="lk"><a href="case-study-dataforge.html#overview" data-en="Overview →" data-es="Detalle →">Overview →</a></div>
     </div>
 
     <div class="proj panel">
@@ -235,6 +236,21 @@
       <div class="tech"><span>Cloudflare Workers AI</span><span>Vectorize</span><span>D1</span><span>Workflows</span><span>JavaScript</span><span>Terraform</span></div>
       <p class="impact" data-en="<b>Impact:</b> proof of deploying &amp; operating AI on cloud infrastructure — live and public." data-es="<b>Impacto:</b> prueba de desplegar y operar IA sobre infraestructura cloud — en vivo y público."><b>Impact:</b> proof of deploying &amp; operating AI on cloud infrastructure — live and public.</p>
       <div class="lk"><a href="https://github.com/juanberrio0399/serverless-rag-assistant" target="_blank" data-en="View repo →" data-es="Ver repo →">View repo →</a></div>
+    </div>
+
+    <div class="proj panel">
+      <div class="ph"><h3 data-en="Dockerized Data Tool" data-es="Herramienta de datos en Docker">Dockerized Data Tool</h3><span class="badge" data-en="Public repo" data-es="Repo público">Public repo</span></div>
+      <p data-en="A small CSV-summary CLI used as the vehicle for a hardened container supply chain: what you pull is exactly what was scanned and tested." data-es="Una CLI pequeña que resume CSV, usada como vehículo de una cadena de suministro de contenedores endurecida: lo que descargas es exactamente lo que se escaneó y probó.">A small CSV-summary CLI used as the vehicle for a hardened container supply chain: what you pull is exactly what was scanned and tested.</p>
+      <div class="how">
+        <div class="lbl" data-en="How I automate it" data-es="Cómo lo automatizo">How I automate it</div>
+        <ul>
+          <li data-en="Multi-platform image (amd64 + arm64) built on native runners, no emulation." data-es="Imagen multiplataforma (amd64 + arm64) construida en runners nativos, sin emulación.">Multi-platform image (amd64 + arm64) built on native runners, no emulation.</li>
+          <li data-en="Trivy blocks the release on fixable CRITICAL/HIGH findings; the pushed digest must equal the scanned one." data-es="Trivy bloquea la publicación si hay hallazgos CRITICAL/HIGH con arreglo; el digest publicado debe ser el escaneado.">Trivy blocks the release on fixable CRITICAL/HIGH findings; the pushed digest must equal the scanned one.</li>
+          <li data-en="SBOM, smoke test as a non-root user and SLSA provenance attested per image." data-es="SBOM, prueba de humo como usuario sin privilegios y procedencia SLSA atestada por imagen.">SBOM, smoke test as a non-root user and SLSA provenance attested per image.</li>
+        </ul>
+      </div>
+      <div class="tech"><span>Docker</span><span>GitHub Actions</span><span>Trivy</span><span>SLSA</span><span>Python</span></div>
+      <div class="lk"><a href="https://github.com/juanberrio0399/dockerized-data-tool" target="_blank" data-en="View repo →" data-es="Ver repo →">View repo →</a></div>
     </div>
   </div>
 </section>
