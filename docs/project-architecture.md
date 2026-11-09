@@ -12,7 +12,7 @@ The architecture of this repository (the site and the SQL playground) is in the
 ## DataForge — business Excel files to a serverless dashboard
 
 Client code is private. This is the anonymized architecture described in the
-[case study](https://github.com/juanberrio0399/portfolio/blob/main/case-studies/01-dataforge-customs-reconciliation_EN.md).
+[case study](../case-study-dataforge.html) ([live](https://juanberrio0399.github.io/case-study-dataforge.html)).
 The heavy path reads the courier's Excel exports on a PC because doing that volume in the cloud
 would cost money; the light sources never touch that machine.
 
@@ -20,7 +20,7 @@ would cost money; the light sources never touch that machine.
 flowchart LR
   XL["Business Excel files<br/>SharePoint / OneDrive"]
 
-  subgraph HEAVY["Heavy path - on-premises PC, Task Scheduler 3x/day"]
+  subgraph HEAVY["Heavy path - on-premises PC, one-click run"]
     direction TB
     CAT["catalog.json<br/>modified time per file"] -.->|"only changed files"| RD
     RD["readers.py<br/>parallel Excel read"] --> TR["transforms.py<br/>cleaning, typing, join keys"]
@@ -48,7 +48,7 @@ flowchart LR
   R2 --> FN
 ```
 
-The cloud steps of the daily run are deliberately non-critical: if the R2 sync fails the local
+The cloud steps of each run are deliberately non-critical: if the R2 sync fails the local
 warehouse is still correct and the run reports which step was skipped.
 
 ## Serverless RAG Assistant

@@ -1,25 +1,14 @@
-# juanberrio0399.github.io
+<p align="center"><img src="docs/banner.svg" alt="juanberrio0399.github.io — portfolio site with a SQL playground" width="100%"></p>
+<p align="center"><b>English</b> · <a href="README.es.md">Español</a></p>
+<p><b>What it does:</b> it's the source of <a href="https://juanberrio0399.github.io">juanberrio0399.github.io</a>, my portfolio as a Cloud &amp; Data Engineer: profile, projects, CV in EN/ES, the DataForge case study and a SQL playground.</p>
+<p><b>How it works:</b> plain HTML, CSS and JavaScript, no build step. GitHub Pages serves <code>main</code> as is, and the playground runs DuckDB-WASM in your browser over a small snapshot of my public GitHub activity.</p>
+<p><a href="https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml"><img src="https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml/badge.svg" alt="Lighthouse CI"></a> <a href="https://scorecard.dev/viewer/?uri=github.com/juanberrio0399/juanberrio0399.github.io"><img src="https://api.scorecard.dev/projects/github.com/juanberrio0399/juanberrio0399.github.io/badge" alt="OpenSSF Scorecard"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT license"></a></p>
 
-> Current status, what was done and what is left: **[PLAN.md](PLAN.md)**.
+---
 
-[![Lighthouse CI](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/juanberrio0399/juanberrio0399.github.io/badge)](https://scorecard.dev/viewer/?uri=github.com/juanberrio0399/juanberrio0399.github.io)
+## Why it exists
 
-Source of <https://juanberrio0399.github.io> — the portfolio of Juan Berrio, Cloud & Data Engineer.
-
-## What this is
-
-A three-page static site (portfolio, SQL playground, 404) written in HTML, CSS and vanilla
-JavaScript, served by GitHub Pages straight from `main`. There is no framework, no bundler and no
-build step: what is committed is what is served.
-
-Two things it has to do beyond looking presentable:
-
-- **Answer a recruiter in one page.** EN/ES toggle, project tabs, and a print stylesheet so
-  `Download Portfolio (PDF)` is just `window.print()` — no PDF to keep in sync with the site.
-- **Show the work instead of describing it.** [`playground.html`](playground.html) runs real SQL
-  over a snapshot of Juan's public GitHub activity using DuckDB-WASM, in the visitor's browser.
-  It is the same local-first pattern used in the DataForge dashboards, small enough to read.
+Most of my work runs on private company data, so a recruiter can't just open the repos. The site has two jobs. First, answer a recruiter in one page: EN/ES toggle, project tabs, a downloadable CV, and a print stylesheet so "Download Portfolio (PDF)" is just `window.print()`, with no PDF to keep in sync. Second, show the work instead of describing it: [`playground.html`](playground.html) runs real SQL in the visitor's browser with the same local-first pattern I use in the DataForge dashboards, small enough to read in one sitting.
 
 ## How it works
 
@@ -39,14 +28,9 @@ flowchart LR
   PAGES --> USER["Visitor's browser<br/>CSP delivered in a meta tag"]
 ```
 
-Pages is configured as *deploy from branch* (`main`, `/`), so a merge is the deploy. `.nojekyll`
-switches off Jekyll processing, which would otherwise ignore any path starting with an underscore
-and add a build step for nothing.
+Pages deploys from the branch (`main`, `/`), so merging is deploying. `.nojekyll` switches Jekyll off; otherwise it would skip any path starting with an underscore and add a build step for nothing.
 
-Pages cannot send response headers, so the Content-Security-Policy travels in a
-`<meta http-equiv>` tag in every page. The base policy is `default-src 'none'` plus the few hosts
-actually used (Google Fonts for CSS and font files). `playground.html` ships a wider policy of its
-own because WebAssembly needs it — see below.
+Pages can't send response headers, so the Content-Security-Policy goes in a `<meta http-equiv>` tag on every page. The base policy is `default-src 'none'` plus the few hosts the site actually uses (Google Fonts). `playground.html` has a wider policy of its own because WebAssembly needs it.
 
 ### Playground
 
@@ -65,62 +49,41 @@ flowchart TB
   EXEC --> TBL["Results rendered into a table<br/>row cap chosen in the UI"]
 ```
 
-Nothing about the engine loads with the page: the 7 MB download happens on the first `Run`, so a
-visitor who never runs a query pays for a normal HTML page. The worker and `.wasm` come from
-jsDelivr but are fetched with `fetch(..., { integrity })` against SHA-384 hashes pinned in
-[`assets/js/playground.js`](assets/js/playground.js), then started from `blob:` URLs — a swapped
-CDN file fails to load instead of running. Known DuckDB extensions are disabled
-(`autoinstall_known_extensions = false`) so a query can never pull code from a third host at
-runtime.
+The engine doesn't load with the page. The 7 MB download happens on the first `Run`, so someone who never runs a query only pays for a normal HTML page. The worker and the `.wasm` come from jsDelivr, but they're fetched with `fetch(..., { integrity })` against SHA-384 hashes pinned in [`assets/js/playground.js`](assets/js/playground.js) and started from `blob:` URLs. If the CDN ever serves a different file, it fails to load instead of running. Known DuckDB extensions are turned off (`autoinstall_known_extensions = false`), so a query can't pull code from a third host.
 
-The data is five Apache Arrow IPC files (~28 KB in total: 7 repos, 12 language rows, 77 commit-days,
-154 pull requests, 1 snapshot row taken 2026-09-15). Arrow rather than Parquet because DuckDB-WASM
-ingests Arrow natively, while Parquet would make the browser fetch the parquet extension at runtime.
+The data is five Apache Arrow IPC files, about 28 KB in total: 7 repos, 12 language rows, 77 commit-days, 154 pull requests and 1 snapshot row taken on 2026-09-15. I used Arrow instead of Parquet because DuckDB-WASM reads Arrow natively; Parquet would make the browser download the parquet extension at runtime.
 
-Architecture diagrams for the projects the site talks about (DataForge, the Serverless RAG
-Assistant) live in [docs/project-architecture.md](docs/project-architecture.md).
+The diagrams of the projects the site talks about (DataForge and the Serverless RAG Assistant) are in [docs/project-architecture.md](docs/project-architecture.md).
 
-## Repository structure
+## What it connects to
 
-| Path | What lives there |
+| Repo or system | How |
 |---|---|
-| `index.html` | The portfolio itself: profile, skills, project tabs, contact. Includes JSON-LD and the per-page CSP. |
-| `playground.html` | The SQL playground page: presets, editor, table schemas, and its own wider CSP. |
-| `404.html` | Served by Pages for any unknown path; uses root-absolute asset paths for that reason. |
-| `assets/js/main.js` | Portfolio behaviour: language toggle, project tabs, scroll reveal, print. No inline handlers, so the CSP needs no `'unsafe-inline'`. |
-| `assets/js/playground.js` | Engine boot, SRI pins, preset queries, EN/ES messages, result rendering. |
-| `assets/css/` | `main.css` (site + print rules), `playground.css`, `404.css`. |
-| `assets/vendor/duckdb-wasm/` | Self-hosted DuckDB-WASM JS API (~215 KB, built by the vendor script) and its third-party notices. |
-| `assets/data/playground/*.arrow` | The committed snapshot the playground queries. |
-| `scripts/playground/build_data.py` | Rebuilds those Arrow files from the public GitHub REST API. |
-| `scripts/playground/vendor_duckdb.sh` | Rebuilds `duckdb-api.js` and prints the SHA-384 hashes to paste into `playground.js`. |
-| `.github/workflows/` | `lighthouse.yml` (quality gate on every PR), `scorecard.yml` (supply-chain score). |
-| `.github/dependabot.yml` | Weekly grouped bump of the pinned action SHAs. |
-| `.lighthouserc.json` | Which URLs Lighthouse audits and the score thresholds it enforces. |
-| `SECURITY.md` | Scope of the project and how to report a vulnerability. |
-| `robots.txt`, `sitemap.xml`, `og-image.png`, `favicon.svg`, `.nojekyll` | Indexing, social preview and the Jekyll opt-out. |
+| [juanberrio0399](https://github.com/juanberrio0399/juanberrio0399) | My GitHub profile README links here as the main portfolio |
+| [serverless-rag-assistant](https://github.com/juanberrio0399/serverless-rag-assistant) | Project card with a link to the repo and the live demo |
+| [dockerized-data-tool](https://github.com/juanberrio0399/dockerized-data-tool) | Project card with a link to the repo |
+| DataForge and DataForge Cloud (private) | Described in `case-study-dataforge.html`, anonymized. That page is now the source; it used to live in a private repo |
+| GitHub REST API | `scripts/playground/build_data.py` reads my public activity to rebuild the playground snapshot. The site never calls it at runtime |
 
 ## Running it locally
 
-Any static file server works; the pages use relative paths (`404.html` does not, by design).
+Any static file server works. The pages use relative paths (except `404.html`, on purpose).
 
 ```sh
 python -m http.server 8000
-# http://localhost:8000/  and  http://localhost:8000/playground.html
+# http://localhost:8000/  ·  /playground.html  ·  /case-study-dataforge.html
 ```
 
-Opening the files with `file://` does not work: `playground.js` is an ES module and the Arrow
-fetches are same-origin.
+Opening the files with `file://` doesn't work: `playground.js` is an ES module and the Arrow fetches are same-origin.
 
-Refresh the playground snapshot (writes into `assets/data/playground/`):
+Refresh the playground snapshot (writes to `assets/data/playground/`):
 
 ```sh
 pip install duckdb pyarrow
 GITHUB_TOKEN=$(gh auth token) python scripts/playground/build_data.py
 ```
 
-The token is optional — it only raises the GitHub API rate limit. The run above took a few minutes
-and printed a row count per table.
+The token is optional; it only raises the GitHub API rate limit. A run takes a few minutes and prints a row count per table.
 
 Re-vendor the DuckDB-WASM API after bumping the engine version (needs `npm` and `openssl`):
 
@@ -128,69 +91,38 @@ Re-vendor the DuckDB-WASM API after bumping the engine version (needs `npm` and 
 sh scripts/playground/vendor_duckdb.sh
 ```
 
-It rewrites `assets/vendor/duckdb-wasm/duckdb-api.js` and prints the four SHA-384 lines to copy
-into the `SRI` map in `assets/js/playground.js`; `ENGINE_VERSION` there and the versions in
-`THIRD_PARTY_NOTICES.txt` have to move in the same commit.
+It rewrites `assets/vendor/duckdb-wasm/duckdb-api.js` and prints the four SHA-384 lines to paste into the `SRI` map in `assets/js/playground.js`. `ENGINE_VERSION` there and the versions in `THIRD_PARTY_NOTICES.txt` have to change in the same commit.
 
-There is no local command for the quality gate. `npx @lhci/cli autorun` does run the audits on
-Windows, but chrome-launcher then fails to delete its own temp directory (`EPERM`) and the run exits
-non-zero after the fact, so the numbers that count are the ones from the Lighthouse job on the pull
-request — its log links a full HTML report.
+There's no local command for the quality gate. `npx @lhci/cli autorun` does run the audits on Windows, but chrome-launcher then fails to delete its temp folder (`EPERM`) and exits non-zero anyway, so the numbers that count are the ones from the Lighthouse job on the pull request. Its log links the full HTML report.
 
-## Decisions and limits
+## Structure
 
-- **No framework, no build step.** The site is a few hundred lines of markup; a bundler would add a
-  toolchain to maintain and a class of deploy failures for no gain. It also keeps the Pages setup
-  at *deploy from branch*, so there is no way for a "built" site to drift from the sources.
-- **CSP in a meta tag.** Not as strong as a header (it cannot carry `frame-ancestors` or a report
-  endpoint), but it is the only option Pages offers, and it still blocks inline script, unexpected
-  hosts and form posts. Adding an external asset means editing the policy in every page.
-- **The engine loads on the first query, not on page load.** The playground exists to be tried, not
-  to be downloaded; deferring the 7 MB is what keeps the page's Lighthouse performance score in the
-  same range as the portfolio page.
-- **The engine is pinned and integrity-checked rather than fully self-hosted.** The `.wasm` files
-  are too large to keep in Git for a Pages site; hashes give the same guarantee without the weight.
-  Only the small JS API is committed.
-- **The snapshot is committed data, not a live API call.** The playground shows what the repository
-  contains; it does not call GitHub at runtime, so it works offline once the engine is cached and
-  cannot leak a token.
-- **What this project is not.** No backend, no database, no analytics, no cookies, no forms and no
-  user input leaving the browser. Nothing here is a general-purpose SQL service: the dataset is
-  fixed at ~28 KB and lives entirely in the visitor's memory.
+| Path | What's there |
+|---|---|
+| `index.html` | The portfolio: profile, skills, project tabs, contact. JSON-LD and the per-page CSP |
+| `case-study-dataforge.html` | DataForge case study and technical overview, EN/ES, with `assets/css/case-study.css` and `assets/js/case-study.js` |
+| `playground.html` | The SQL playground: presets, editor, table schemas and its own wider CSP |
+| `404.html` | Served by Pages for any unknown path; uses root-absolute asset paths for that reason |
+| `assets/js/main.js` | Language toggle, project tabs, scroll reveal, print. No inline handlers, so the CSP needs no `'unsafe-inline'` |
+| `assets/js/playground.js` | Engine boot, SRI pins, preset queries, EN/ES messages, result rendering |
+| `assets/css/` | `main.css` (site + print), `case-study.css`, `playground.css`, `404.css` |
+| `assets/cv/` | The downloadable CVs, EN and ES (PDF) |
+| `assets/vendor/duckdb-wasm/` | Self-hosted DuckDB-WASM JS API (~215 KB, built by the vendor script) and its third-party notices |
+| `assets/data/playground/*.arrow` | The committed snapshot the playground queries |
+| `scripts/playground/` | `build_data.py` (rebuilds the Arrow files) and `vendor_duckdb.sh` (rebuilds the JS API and prints the hashes) |
+| `docs/` | Project architecture diagrams, decisions and operation notes, banners |
+| `.github/workflows/` | `lighthouse.yml` (quality gate on every PR) and `scorecard.yml` (supply-chain score) |
+| `.github/dependabot.yml` | Weekly grouped bump of the pinned action SHAs |
+| `.lighthouserc.json` | Which pages Lighthouse audits (index, playground, case study) and the thresholds |
+| `SECURITY.md` | Scope and how to report a vulnerability |
+| `robots.txt`, `sitemap.xml`, `og-image.png`, `favicon.svg`, `.nojekyll` | Indexing, social preview and the Jekyll opt-out |
 
-## Operation
+Why there's no framework, why the CSP is in a meta tag, what runs on its own and what to do when Lighthouse goes red: [docs/operation.md](docs/operation.md).
 
-| What runs | When | Where its output lands |
-|---|---|---|
-| Lighthouse CI | every PR, every push to `main`, manual dispatch | The check named `lighthouse`, plus an uploaded HTML report (temporary public storage) |
-| OpenSSF Scorecard | Tuesdays 06:17 UTC, pushes to `main`, PRs touching `.github/**` | SARIF in the Security tab (code scanning) and the badge above |
-| Dependabot | Tuesdays, one grouped PR | A `ci:` PR that moves the pinned action SHAs and their version comments |
-| GitHub Pages | on every push to `main` | <https://juanberrio0399.github.io> |
+## Status
 
-`main` is protected: a pull request cannot merge until the `lighthouse` check passes, and the
-branch must be up to date first.
+Live at <https://juanberrio0399.github.io>. All four pages, the playground end to end, both CI workflows, Dependabot and the security policy work. The playground snapshot is still refreshed by hand (issue [#42](https://github.com/juanberrio0399/juanberrio0399.github.io/issues/42)). Where it stands and what's next: [PLAN.md](PLAN.md).
 
-When something fails:
+## License
 
-- **Lighthouse red.** Accessibility, best practices and SEO are hard failures below 0.9;
-  performance only warns. Open the report linked in the job log — it names the failing audit.
-  Thresholds live in `.lighthouserc.json`, the audited URLs too.
-- **The playground stops loading.** Almost always the pinned engine: if jsDelivr serves a file whose
-  hash does not match the `SRI` map, the fetch fails and the page shows the "integrity check"
-  message. Re-run the vendor script for the pinned version and compare hashes before changing them.
-- **Scorecard drops.** The score reacts to unpinned actions, missing permissions blocks and stale
-  dependencies. The SARIF entry in the Security tab points at the file and line.
-
-## Current state and next steps
-
-Working: both pages, the playground end to end (verified locally against the committed snapshot),
-the two CI workflows, Dependabot, and the security policy.
-
-Not done yet:
-
-- The snapshot is refreshed by hand. Until `build_data.py` runs on a schedule, the playground data
-  ages — the `snapshot` table is there so a visitor can see exactly how old it is.
-- DNS and security settings are managed in the GitHub UI. Moving them to Terraform is the intended
-  next step and is the only reason a deploy workflow would be worth adding.
-- Open ideas tracked as issues: scroll-driven CSS animations (#3), the Speculative Rules API (#34),
-  and a larger remote-attach playground (#36).
+[MIT](LICENSE) · Juan Berrio
