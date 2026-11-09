@@ -13,6 +13,7 @@ The portfolio of Juan Berrio, Cloud & Data Engineer. Its job is to answer a recr
 | Piece | Where |
 |---|---|
 | Portfolio with EN/ES toggle, project tabs, print stylesheet (PDF = `window.print()`) | `index.html`, `assets/` |
+| DataForge case study + technical overview, EN/ES (generated from the Markdown in the private `portfolio` repo) | `case-study-dataforge.html`, `assets/css/case-study.css`, `assets/js/case-study.js` |
 | SQL playground on DuckDB-WASM | `playground.html` |
 | Static HTML/CSS/vanilla JS, no build step; Pages deploys from `main` | `.nojekyll` |
 | CSP in a meta tag (Pages cannot send headers) | `index.html` |
@@ -38,6 +39,7 @@ The portfolio of Juan Berrio, Cloud & Data Engineer. Its job is to answer a recr
 | 2026-09-01 | MIT license, JSON-LD, Lighthouse workflow | #12–#15 |
 | 2026-09-15 | CSP with inline code moved out, Harden-Runner, DuckDB-WASM playground, real RAG stack | #28–#33 |
 | 2026-09-22/23 | Scorecard, Dependabot, security policy, README rewritten | #37, #40 |
+| 2026-11-09 | DataForge case study and technical overview moved here from the private `portfolio` repo (`case-study-dataforge.html`, EN/ES); no more links to a private repo; Docker project card | — |
 | 2026-09-29 | License year fixed (2024 → 2026) | #45 |
 
 ## What's left
