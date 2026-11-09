@@ -110,7 +110,7 @@ There's no local command for the quality gate. `npx @lhci/cli autorun` does run 
 | `assets/vendor/duckdb-wasm/` | Self-hosted DuckDB-WASM JS API (~215 KB, built by the vendor script) and its third-party notices |
 | `assets/data/playground/*.arrow` | The committed snapshot the playground queries |
 | `scripts/playground/` | `build_data.py` (rebuilds the Arrow files) and `vendor_duckdb.sh` (rebuilds the JS API and prints the hashes) |
-| `docs/` | Project architecture diagrams, decisions and operation notes, banners |
+| `docs/` | Project architecture diagrams, decisions and operation notes, product doc (user stories, flows, data), banners |
 | `.github/workflows/` | `lighthouse.yml` (quality gate on every PR) and `scorecard.yml` (supply-chain score) |
 | `.github/dependabot.yml` | Weekly grouped bump of the pinned action SHAs |
 | `.lighthouserc.json` | Which pages Lighthouse audits (index, playground, case study) and the thresholds |
@@ -121,7 +121,7 @@ Why there's no framework, why the CSP is in a meta tag, what runs on its own and
 
 ## Status
 
-Live at <https://juanberrio0399.github.io>. All four pages, the playground end to end, both CI workflows, Dependabot and the security policy work. The playground snapshot is still refreshed by hand (issue [#42](https://github.com/juanberrio0399/juanberrio0399.github.io/issues/42)). Where it stands and what's next: [PLAN.md](PLAN.md).
+Live at <https://juanberrio0399.github.io>. All four pages, the playground end to end, both CI workflows, Dependabot and the security policy work. The playground snapshot is still refreshed by hand (issue [#42](https://github.com/juanberrio0399/juanberrio0399.github.io/issues/42)). Where it stands and what's next: [PLAN.md](PLAN.md). User stories, flows and data: [docs/PRODUCT.md](docs/PRODUCT.md).
 
 ## License
 
