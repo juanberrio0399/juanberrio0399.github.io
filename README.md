@@ -1,8 +1,8 @@
 <p align="center"><img src="docs/banner.svg" alt="juanberrio0399.github.io — portfolio site with a SQL playground" width="100%"></p>
 <p align="center"><b>English</b> · <a href="README.es.md">Español</a></p>
-<b>What it does:</b> it's the source of <a href="https://juanberrio0399.github.io">juanberrio0399.github.io</a>, my portfolio as a Cloud &amp; Data Engineer: profile, projects, CV in EN/ES, the DataForge case study and a SQL playground.<br>
-<b>How it works:</b> plain HTML, CSS and JavaScript, no build step. GitHub Pages serves <code>main</code> as is, and the playground runs DuckDB-WASM in your browser over a small snapshot of my public GitHub activity.<br>
-<a href="https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml"><img src="https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml/badge.svg" alt="Lighthouse CI"></a> <a href="https://scorecard.dev/viewer/?uri=github.com/juanberrio0399/juanberrio0399.github.io"><img src="https://api.scorecard.dev/projects/github.com/juanberrio0399/juanberrio0399.github.io/badge" alt="OpenSSF Scorecard"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT license"></a>
+<p><b>What it does:</b> it's the source of <a href="https://juanberrio0399.github.io">juanberrio0399.github.io</a>, my portfolio as a Cloud &amp; Data Engineer: profile, projects, CV in EN/ES, the DataForge case study and a SQL playground.</p>
+<p><b>How it works:</b> plain HTML, CSS and JavaScript, no build step. GitHub Pages serves <code>main</code> as is, and the playground runs DuckDB-WASM in your browser over a small snapshot of my public GitHub activity.</p>
+<p><a href="https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml"><img src="https://github.com/juanberrio0399/juanberrio0399.github.io/actions/workflows/lighthouse.yml/badge.svg" alt="Lighthouse CI"></a> <a href="https://scorecard.dev/viewer/?uri=github.com/juanberrio0399/juanberrio0399.github.io"><img src="https://api.scorecard.dev/projects/github.com/juanberrio0399/juanberrio0399.github.io/badge" alt="OpenSSF Scorecard"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2ea44f" alt="MIT license"></a></p>
 
 ---
 
