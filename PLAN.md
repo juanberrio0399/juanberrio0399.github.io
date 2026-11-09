@@ -13,7 +13,7 @@ The portfolio of Juan Berrio, Cloud & Data Engineer. Its job is to answer a recr
 | Piece | Where |
 |---|---|
 | Portfolio with EN/ES toggle, project tabs, print stylesheet (PDF = `window.print()`) | `index.html`, `assets/` |
-| DataForge case study + technical overview, EN/ES (generated from the Markdown in the private `portfolio` repo) | `case-study-dataforge.html`, `assets/css/case-study.css`, `assets/js/case-study.js` |
+| DataForge case study + technical overview, EN/ES (moved from the private `portfolio` repo; this page is now the source) | `case-study-dataforge.html`, `assets/css/case-study.css`, `assets/js/case-study.js` |
 | SQL playground on DuckDB-WASM | `playground.html` |
 | Static HTML/CSS/vanilla JS, no build step; Pages deploys from `main` | `.nojekyll` |
 | CSP in a meta tag (Pages cannot send headers) | `index.html` |
