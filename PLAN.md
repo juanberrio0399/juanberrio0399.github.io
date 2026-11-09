@@ -1,6 +1,6 @@
 # Plan — juanberrio0399.github.io
 
-Updated: 2026-10-11 · Status: **live** at <https://juanberrio0399.github.io>
+Updated: 2026-11-09 · Status: **live** at <https://juanberrio0399.github.io>
 
 How it works is in the [README](README.md). This file says where the project stands and what comes next.
 
@@ -47,7 +47,10 @@ The portfolio of Juan Berrio, Cloud & Data Engineer. Its job is to answer a recr
 1. **#42: live data.** The playground runs on a snapshot; a scheduled Action could refresh it.
 2. Add **aws-labs** if it goes public; today the site has no visible AWS work.
 3. #43 (CodeMirror for the SQL editor), #41 (Observable Plot), #36 (DuckDB remote attach).
-4. #34 (Speculation Rules), #3 (scroll-driven animations): polish, low priority.
+4. #34 (Speculation Rules), #50 (view transitions): polish, low priority.
+5. Content fixes on the pages (next phase): "updates itself three times a day" in `index.html`, "Task Scheduler (3x/día)" in the case study, "~23 services" on the Hearthwood card.
+
+User stories, flows and data: [docs/PRODUCT.md](docs/PRODUCT.md).
 
 ## Known traps
 
