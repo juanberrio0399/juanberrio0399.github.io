@@ -125,6 +125,10 @@ Why there's no framework, why the CSP is in a meta tag, what runs on its own and
 
 Live at <https://juanberrio0399.github.io>. All four pages, the playground end to end, both CI workflows, Dependabot and the security policy work. The playground snapshot is still refreshed by hand (issue [#42](https://github.com/juanberrio0399/juanberrio0399.github.io/issues/42)). Where it stands and what's next: [PLAN.md](PLAN.md). User stories, flows and data: [docs/PRODUCT.md](docs/PRODUCT.md).
 
+## Maintenance
+
+Dependencies are kept current by Dependabot, which I set up in [`.github/dependabot.yml`](.github/dependabot.yml). Every PR it opens is assigned to me with the `mantenimiento-automatico` label, it only gets merged if the tests pass, and I review major version bumps by hand.
+
 ## License
 
 [MIT](LICENSE) · Juan Berrio

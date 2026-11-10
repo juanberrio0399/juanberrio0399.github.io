@@ -125,6 +125,10 @@ Por qué no hay framework, por qué la CSP va en una etiqueta meta, qué corre s
 
 En vivo en <https://juanberrio0399.github.io>. Funcionan las cuatro páginas, el playground de punta a punta, los dos workflows de CI, Dependabot y la política de seguridad. El snapshot del playground todavía se actualiza a mano (issue [#42](https://github.com/juanberrio0399/juanberrio0399.github.io/issues/42)). Dónde está y qué sigue: [PLAN.md](PLAN.md) (en inglés). Historias de usuario, flujos y datos: [docs/PRODUCTO.md](docs/PRODUCTO.md).
 
+## Mantenimiento
+
+Las dependencias las mantiene al día Dependabot, que configuré yo en [`.github/dependabot.yml`](.github/dependabot.yml). Cada PR que abre me lo asigna a mí con la etiqueta `mantenimiento-automatico`, solo entra si pasan las pruebas y los cambios de versión mayor los reviso a mano.
+
 ## Licencia
 
 [MIT](LICENSE) · Juan Berrio
