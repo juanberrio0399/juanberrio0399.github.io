@@ -92,7 +92,7 @@
 <li><strong>Processing:</strong> Pandas, ~4,100 lines in a layered architecture (readers → transforms → writers)</li>
 <li><strong>Storage:</strong> Parquet (intermediate) + DuckDB (view warehouse)</li>
 <li><strong>Presentation:</strong> React + DuckDB-WASM on Cloudflare Pages</li>
-<li><strong>Orchestration:</strong> one-click run that checks the machine first + GitHub Actions freshness check (alert at 30 h); sync to Cloudflare R2</li>
+<li><strong>Orchestration:</strong> one-click run that checks the machine first and runs again on its own if more files landed; in the cloud, a daily ingestion plus one every time an Excel arrives (Power Automate → Worker → GitHub Actions) and a freshness alert at 30 h; sync to Cloudflare R2</li>
 </ul>
 <h2 id="en-results">Results</h2>
 <ul>
@@ -100,7 +100,7 @@
 <li><strong>Automated reconciliation of 5 sources</strong> that were previously cross-checked by hand in Excel.</li>
 <li><strong>One-click run that checks the machine first</strong>, with incremental ingestion (only processes what changed) and per-run logging.</li>
 <li><strong>Infrastructure cost ≈ $0:</strong> local warehouse + Cloudflare free tier; dashboard with no server to maintain.</li>
-<li><strong>Production-hardened:</strong> UTF-8 encoding handling under Windows cron and failure isolation (a failing cloud step doesn&#39;t bring down the local run).</li>
+<li><strong>Production-hardened:</strong> UTF-8 handling in Windows consoles and failure isolation (a failing cloud step doesn&#39;t bring down the local run).</li>
 </ul>
 <h2 id="en-lessons-learned">Lessons learned</h2>
 <ul>
@@ -168,7 +168,7 @@
 <li><strong>Procesamiento:</strong> Pandas, ~4.100 líneas en arquitectura por capas (readers → transforms → writers)</li>
 <li><strong>Almacenamiento:</strong> Parquet (capa intermedia) + DuckDB (warehouse de vistas)</li>
 <li><strong>Presentación:</strong> React + DuckDB-WASM en Cloudflare Pages</li>
-<li><strong>Orquestación:</strong> Windows Task Scheduler (3x/día) + GitHub Actions; sync a Cloudflare R2</li>
+<li><strong>Orquestación:</strong> corrida de un clic que primero revisa el equipo y se relanza sola si llegaron más archivos; en la nube, ingesta diaria y cada vez que llega un Excel (Power Automate → Worker → GitHub Actions) y alerta de frescura a las 30 h; sync a Cloudflare R2</li>
 </ul>
 <h2 id="es-resultados">Resultados</h2>
 <ul>
@@ -176,7 +176,7 @@
 <li><strong>Conciliación automatizada de 5 fuentes</strong> que antes se cruzaban a mano en Excel.</li>
 <li><strong>Corre con un clic, revisando antes el equipo</strong>, con ingesta incremental (solo procesa lo que cambió) y logging por corrida.</li>
 <li><strong>Costo de infraestructura ≈ $0:</strong> warehouse local + tier gratuito de Cloudflare; dashboard sin servidor que mantener.</li>
-<li><strong>Robusto en producción:</strong> manejo de encoding UTF-8 bajo cron de Windows y aislamiento de fallos (un paso cloud que falla no tumba la corrida local).</li>
+<li><strong>Robusto en producción:</strong> manejo de UTF-8 en la consola de Windows y aislamiento de fallos (un paso cloud que falla no tumba la corrida local).</li>
 </ul>
 <h2 id="es-lecciones-aprendidas">Lecciones aprendidas</h2>
 <ul>
@@ -188,7 +188,7 @@
   </section>
   <section id="overview" lang="en" class="cs-ficha">
     <h2 class="cs-sep" data-en="Technical overview" data-es="Ficha técnica (en inglés)">Technical overview</h2>
-    <p>ETL pipeline + analytical layer that reconciles an international courier&#39;s customs operation.
+    <p>ETL pipeline + analytical layer that reconciles an international logistics operator&#39;s customs operation.
 Turns business-generated Excel files into columnar Parquet with incremental dedup, and exposes
 the result as DuckDB views consumed from BI tools, notebooks and a serverless cloud dashboard.</p>
 <blockquote>
@@ -250,7 +250,7 @@ package-level (1:1) tax reconciliation chain — see the
 <li>Incremental ingestion + dedup; Parquet columnar storage; DuckDB view warehouse</li>
 <li>Serverless cloud delivery: Cloudflare R2 + Pages, React + DuckDB-WASM, no backend</li>
 <li>One-click run that checks the machine first + GitHub Actions freshness alerts (30 h)</li>
-<li>Production hardening: UTF-8 under cron, per-run logging, failure isolation</li>
+<li>Production hardening: UTF-8 in Windows consoles, per-run logging, failure isolation</li>
 </ul>
 <h2 id="ov-stack">Stack</h2>
 <p><code>Python</code> · <code>Pandas</code> · <code>DuckDB</code> · <code>Parquet</code> · <code>Cloudflare R2/Pages</code> · <code>React + DuckDB-WASM</code> · <code>GitHub Actions</code> · <code>Power Automate</code></p>

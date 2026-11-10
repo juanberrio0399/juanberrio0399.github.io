@@ -62,6 +62,8 @@ The diagrams of the projects the site talks about (DataForge and the Serverless 
 | [juanberrio0399](https://github.com/juanberrio0399/juanberrio0399) | My GitHub profile README links here as the main portfolio |
 | [serverless-rag-assistant](https://github.com/juanberrio0399/serverless-rag-assistant) | Project card with a link to the repo and the live demo |
 | [dockerized-data-tool](https://github.com/juanberrio0399/dockerized-data-tool) | Project card with a link to the repo |
+| [video-forge](https://github.com/juanberrio0399/video-forge) | Project card with a link to the repo |
+| Signal Halo Studio, UGPP Shield Pro, CAOS CITY and the operations tools (private) | Project cards with no link; they only describe what each one does |
 | DataForge and DataForge Cloud (private) | Described in `case-study-dataforge.html`, anonymized. That page is now the source; it used to live in a private repo |
 | GitHub REST API | `scripts/playground/build_data.py` reads my public activity to rebuild the playground snapshot. The site never calls it at runtime |
 
