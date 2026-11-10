@@ -45,14 +45,14 @@ User stories, flows and data for <https://juanberrio0399.github.io>. How it's bu
 #### HU-04 · See impact at a glance
 **As** a hiring manager **I want** the key numbers first **so that** I can decide quickly whether to keep reading.
 **Acceptance criteria**
-- The top of the page shows 6+ years, 36M+ records processed, 13K+ Excel files automated, ~$0 infra cost and the number of projects.
+- The top of the page shows 6+ years, 36M+ records processed, 13K+ Excel files automated, ~$0 infra cost and the number of projects in the tabs (9).
 - Each project tab ends with an "Impact" line in the selected language.
 **Where it lives:** `index.html`
 
 #### HU-05 · Compare projects without scrolling forever
 **As** a hiring manager **I want** projects as tabs **so that** I jump to the one that matters to my role.
 **Acceptance criteria**
-- The Projects section has one tab per project (DataForge Cloud, DataForge, portal automation, UGPP Shield Pro, Hearthwood, RAG assistant, Docker tool); clicking a tab shows only that panel.
+- The Projects section has one tab per project (DataForge Cloud, DataForge, operations automation, Video Forge, Signal Halo Studio, RAG assistant, Docker tool, UGPP Shield Pro, CAOS CITY), nine in total; clicking a tab shows only that panel.
 - Each panel says what the project does, how it's automated, the stack and, when it exists, a link to the repo, the demo or the case study.
 **Where it lives:** `index.html`, `assets/js/main.js` (`showTab`)
 

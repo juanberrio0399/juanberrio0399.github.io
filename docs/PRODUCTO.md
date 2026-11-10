@@ -45,14 +45,14 @@ Historias de usuario, flujos y datos de <https://juanberrio0399.github.io>. Cóm
 #### HU-04 · Ver el impacto de un vistazo
 **Como** líder que contrata **quiero** las cifras clave primero **para** decidir rápido si sigo leyendo.
 **Criterios de aceptación**
-- Arriba de la página aparecen 6+ años, 36M+ registros procesados, 13K+ archivos Excel automatizados, ~$0 de infraestructura y el número de proyectos.
+- Arriba de la página aparecen 6+ años, 36M+ registros procesados, 13K+ archivos Excel automatizados, ~$0 de infraestructura y el número de proyectos de las pestañas (9).
 - Cada pestaña de proyecto termina con una línea de "Impacto" en el idioma elegido.
 **Dónde vive:** `index.html`
 
 #### HU-05 · Comparar proyectos sin scroll infinito
 **Como** líder que contrata **quiero** los proyectos en pestañas **para** ir directo al que le sirve a mi cargo.
 **Criterios de aceptación**
-- La sección de proyectos tiene una pestaña por proyecto (DataForge Cloud, DataForge, automatización de portal, UGPP Shield Pro, Hearthwood, asistente RAG, herramienta Docker); al hacer clic solo se ve ese panel.
+- La sección de proyectos tiene una pestaña por proyecto (DataForge Cloud, DataForge, automatización operativa, Video Forge, Signal Halo Studio, asistente RAG, herramienta Docker, UGPP Shield Pro, CAOS CITY), nueve en total; al hacer clic solo se ve ese panel.
 - Cada panel dice qué hace el proyecto, cómo se automatiza, el stack y, cuando existe, el enlace al repo, a la demo o al caso de estudio.
 **Dónde vive:** `index.html`, `assets/js/main.js` (`showTab`)
 

@@ -62,6 +62,8 @@ Los diagramas de los proyectos que describe el sitio (DataForge y el Serverless 
 | [juanberrio0399](https://github.com/juanberrio0399/juanberrio0399) | El README de mi perfil de GitHub enlaza aquí como portafolio principal |
 | [serverless-rag-assistant](https://github.com/juanberrio0399/serverless-rag-assistant) | Tarjeta de proyecto con enlace al repo y a la demo en vivo |
 | [dockerized-data-tool](https://github.com/juanberrio0399/dockerized-data-tool) | Tarjeta de proyecto con enlace al repo |
+| [video-forge](https://github.com/juanberrio0399/video-forge) | Tarjeta de proyecto con enlace al repo |
+| Signal Halo Studio, UGPP Shield Pro, CAOS CITY y las herramientas de la operación (privados) | Tarjetas sin enlace; solo cuentan qué hace cada uno |
 | DataForge y DataForge Cloud (privados) | Se describen en `case-study-dataforge.html`, anonimizados. Esa página es ahora la fuente; antes vivía en un repo privado |
 | API REST de GitHub | `scripts/playground/build_data.py` lee mi actividad pública para reconstruir el snapshot del playground. El sitio nunca la llama en tiempo de ejecución |
 
