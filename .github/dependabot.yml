@@ -15,4 +15,7 @@ updates:
     commit-message:
       prefix: ci
     labels:
+      - "mantenimiento-automatico"
       - dependencies
+    assignees:
+      - "juanberrio0399"
