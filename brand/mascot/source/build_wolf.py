@@ -453,9 +453,17 @@ if RENDER:
                  ("banner", (-0.5, -13.0, 2.2), (-1.7, 0, 2.02), 3168, 792, 70))
     else:
         VIEWS = (("frente", (2.2, -7.6, 2.2), (0, 0, 1.3), 760, 760, 70), ("cara", (1.1, -3.7, 2.25), (0, 0, 1.9), 760, 760, 70), ("lado", (7.4, -2.0, 2.0), (0, 0, 1.3), 760, 760, 70))
+    # backdrop with a blue glow, used only by the banner (the other views show the floor instead)
+    bm = bmesh.new(); bmesh.ops.create_grid(bm, x_segments=1, y_segments=1, size=30)
+    me = bpy.data.meshes.new("wall"); bm.to_mesh(me); bm.free()
+    wall = bpy.data.objects.new("wall", me); col.objects.link(wall); me.materials.append(material("wall", 0x0B2233, 0.95))
+    wall.location = (0, 9.0, 3.0); wall.rotation_euler = (math.pi / 2, 0, 0)
+    glow = bpy.data.lights.new("glow", "POINT"); glow.energy = 700; glow.color = lin(0x22A5D8); glow.shadow_soft_size = 1.0
+    glow_o = bpy.data.objects.new("glow", glow); col.objects.link(glow_o); glow_o.location = (1.0, 7.6, 2.0)
     only = [a[5:] for a in sys.argv if a.startswith("solo_")]
     for name, loc, aim, w, h, lens in [v for v in VIEWS if not only or v[0] in only]:
         scene.render.resolution_x = w; scene.render.resolution_y = h; cam_d.lens = lens
+        wall.hide_render = glow_o.hide_render = name != "banner"
         if "prueba" in sys.argv:
             scene.render.resolution_percentage = 30; scene.cycles.samples = 16
         cam.location = loc
