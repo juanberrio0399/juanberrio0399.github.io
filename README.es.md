@@ -55,6 +55,14 @@ Los datos son cinco archivos Apache Arrow IPC, unos 28 KB en total: 7 repos, 12 
 
 Los diagramas de los proyectos que describe el sitio (DataForge y el Serverless RAG Assistant) están en [docs/project-architecture.md](docs/project-architecture.md) (en inglés).
 
+### Flujos animados
+
+[`flow.html`](flow.html) explica cinco proyectos (pipeline de datos, robots de la operación, asistente de IA, fábrica de videos y herramienta de calidad) como flujos de datos. Cada flujo es un diagrama 2D que corre solo: las etapas son nodos sobre un riel, y las unidades de trabajo salen de la entrada, pasan por cada etapa y llegan a la salida en un ciclo de unos cuatro segundos. Debajo de cada etapa dice qué hace y cuánto tarda de forma manual y automatizada. Las unidades que detiene una validación se salen del riel, y una segunda pista muestra el mismo trabajo hecho manualmente, una unidad a la vez, a su ritmo frente a la corrida automatizada.
+
+Cuatro contadores encima del diagrama suman las unidades procesadas, el tiempo manual equivalente, el tiempo automatizado y el tiempo ahorrado. Al elegir una etapa se abre su detalle abajo: el dato de ejemplo que entra, el que sale, el tiempo manual y automatizado por unidad, y qué queda bajo control para quien gestiona el proceso. Dos controles (volumen diario y minutos manuales por unidad) recalculan toda la página. Todo lo del diagrama es inventado para la demo; cada proyecto lista aparte lo que sí es real.
+
+No hay ninguna librería detrás: [`assets/js/flow.js`](assets/js/flow.js) dibuja el riel y las unidades en SVG y los nodos en HTML normal, y así la página conserva la CSP base (`script-src 'self'`). La posición de cada unidad es una función pura del tiempo transcurrido. En pantallas angostas el riel se dobla en filas, y con `prefers-reduced-motion` el diagrama se dibuja quieto.
+
 ## Con qué se conecta
 
 | Repo o sistema | Cómo |
@@ -73,7 +81,7 @@ Sirve cualquier servidor de archivos estáticos. Las páginas usan rutas relativ
 
 ```sh
 python -m http.server 8000
-# http://localhost:8000/  ·  /playground.html  ·  /case-study-dataforge.html
+# http://localhost:8000/  ·  /playground.html  ·  /case-study-dataforge.html  ·  /flow.html
 ```
 
 Abrir los archivos con `file://` no funciona: `playground.js` es un módulo ES y los Arrow se piden al mismo origen.
@@ -104,10 +112,12 @@ No hay comando local para la compuerta de calidad. `npx @lhci/cli autorun` sí c
 | `index.html` | El portafolio: perfil, habilidades, pestañas de proyectos, contacto. JSON-LD y la CSP de la página |
 | `case-study-dataforge.html` | Caso de estudio y detalle técnico de DataForge, ES/EN, con `assets/css/case-study.css` y `assets/js/case-study.js` |
 | `playground.html` | El playground de SQL: consultas de ejemplo, editor, esquemas de tablas y su propia CSP |
+| `flow.html` | Los flujos animados de cinco proyectos (etapas, tiempo manual contra automatizado, control) con el detalle de cada etapa |
 | `404.html` | Lo sirve Pages para cualquier ruta desconocida; por eso usa rutas absolutas desde la raíz |
 | `assets/js/main.js` | Selector de idioma, pestañas, animación al hacer scroll, impresión. Sin handlers inline, así la CSP no necesita `'unsafe-inline'` |
+| `assets/js/flow.js`, `assets/js/flow-data.js` | El diagrama 2D y su animación; y el contenido de cada flujo (etapas, textos EN/ES, datos de ejemplo) |
 | `assets/js/playground.js` | Arranque del motor, hashes SRI, consultas de ejemplo, mensajes ES/EN, tabla de resultados |
-| `assets/css/` | `main.css` (sitio + impresión), `case-study.css`, `playground.css`, `404.css` |
+| `assets/css/` | `main.css` (sitio + impresión), `case-study.css`, `playground.css`, `flow.css`, `404.css` |
 | `assets/cv/` | Las hojas de vida descargables, ES y EN (PDF) |
 | `assets/vendor/duckdb-wasm/` | API en JS de DuckDB-WASM (~215 KB, la genera el script de vendor) y sus avisos de terceros |
 | `assets/data/playground/*.arrow` | El snapshot versionado que consulta el playground |
@@ -115,7 +125,7 @@ No hay comando local para la compuerta de calidad. `npx @lhci/cli autorun` sí c
 | `docs/` | Diagramas de los proyectos, decisiones y operación, documento de producto (historias, flujos, datos), banners |
 | `.github/workflows/` | `lighthouse.yml` (compuerta de calidad en cada PR) y `scorecard.yml` (puntaje de cadena de suministro) |
 | `.github/dependabot.yml` | Actualización semanal agrupada de los SHA de las actions |
-| `.lighthouserc.json` | Qué páginas audita Lighthouse (inicio, playground, caso de estudio) y los umbrales |
+| `.lighthouserc.json` | Qué páginas audita Lighthouse (inicio, playground, caso de estudio, flujo) y los umbrales |
 | `SECURITY.md` | Alcance y cómo reportar una vulnerabilidad |
 | `robots.txt`, `sitemap.xml`, `og-image.png`, `favicon.svg`, `.nojekyll` | Indexación, vista previa en redes y la desactivación de Jekyll |
 
