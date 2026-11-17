@@ -138,3 +138,14 @@ footer{border-top:1px solid var(--line);padding:34px 0;color:var(--mut);font-siz
   .stats{grid-template-columns:repeat(2,1fr);gap:22px}
   .skill-row .k{min-width:100%}
 }
+
+/* Mascot: a quiet presence in the corner of the header and the footer signature, never the focus. */
+header .wrap{position:relative}
+.mascot{position:absolute;top:-14px;right:28px;height:176px;width:auto;pointer-events:none;user-select:none;
+  filter:drop-shadow(0 14px 18px rgba(15,23,42,.14));animation:mascot-idle 6s ease-in-out infinite}
+@keyframes mascot-idle{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(-1.2deg)}}
+@media(min-width:1120px){.mascot{right:-64px;height:212px}}
+@media(max-width:760px){.mascot{top:-74px;right:22px;height:84px}}
+.sig{width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:10px;box-shadow:0 0 0 1px var(--line)}
+@media (prefers-reduced-motion:reduce){.mascot{animation:none}}
+@media print{.mascot,.sig{display:none}}
