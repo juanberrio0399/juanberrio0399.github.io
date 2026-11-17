@@ -413,7 +413,9 @@ paint(tail_o, lambda p: mix(mix(FUR, FURD, sm(0.15, 0.6, (R(0.5) @ p).y) * 0.7),
 bpy.context.view_layer.update()
 for o in scene.objects:
     o.select_set(True)
-bpy.ops.export_scene.gltf(filepath=OUT + "/lobo.glb", export_format="GLB", use_selection=True, export_apply=True, export_yup=True, export_cameras=False, export_lights=False)
+bpy.ops.export_scene.gltf(filepath=OUT + "/lobo.glb", export_format="GLB", use_selection=True, export_apply=True, export_yup=True, export_cameras=False, export_lights=False,
+                          export_draco_mesh_compression_enable=True, export_draco_mesh_compression_level=6,
+                          export_draco_position_quantization=14, export_draco_normal_quantization=10, export_draco_color_quantization=10)
 print("GLB written", sum(len(o.data.vertices) for o in scene.objects if o.type == "MESH"), "vertices")
 
 # ---------------------------------------------------------------- preview renders
