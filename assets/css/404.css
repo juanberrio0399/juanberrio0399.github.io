@@ -6,3 +6,7 @@ h2{color:#0f172a;font-size:22px;margin:8px 0 10px}
 p{color:#64748b;line-height:1.6;margin:0}
 a{display:inline-block;margin-top:22px;background:#1d4ed8;color:#fff;text-decoration:none;
   padding:12px 22px;border-radius:10px;font-weight:600}
+
+.wolf{height:190px;width:auto;margin-bottom:6px;filter:drop-shadow(0 14px 18px rgba(15,23,42,.14));animation:w 6s ease-in-out infinite}
+@keyframes w{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@media (prefers-reduced-motion:reduce){.wolf{animation:none}}
