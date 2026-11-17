@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lobo 3D</title>
+<style>
+  html,body{margin:0;height:100%;background:#06131E;overflow:hidden;font-family:Inter,'Segoe UI',sans-serif}
+  canvas{display:block;width:100%;height:100%;cursor:grab}
+  .hud{position:fixed;left:16px;bottom:14px;color:#9FB6C8;font-size:13px;line-height:1.5;pointer-events:none}
+  .hud b{color:#F5FAFF}
+  .btns{position:fixed;right:16px;bottom:14px;display:flex;gap:8px}
+  button{background:#123A5A;color:#F5FAFF;border:1px solid #22D3EE55;border-radius:10px;padding:8px 14px;font:600 13px Inter,'Segoe UI',sans-serif;cursor:pointer}
+  button:hover{border-color:#22D3EE}
+</style>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="hud"><b>Clic en el piso</b>: camina hasta ahí · <b>flechas / WASD</b>: lo manejas · <b>arrastrar</b>: girar la cámara · <b>rueda</b>: acercar</div>
+<div class="btns"><button id="bWave">Saludar</button><button id="bAuto">Paseo automático: sí</button></div>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 0.92;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x06131e); scene.fog = new THREE.Fog(0x06131e, 13, 30);
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.5;
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+camera.position.set(2.6, 2.2, 6.6);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true; controls.enablePan = false; controls.minDistance = 3; controls.maxDistance = 16;
+controls.maxPolarAngle = Math.PI * 0.49; controls.target.set(0, 1.25, 0);
+
+// ---------- lights ----------
+const key = new THREE.DirectionalLight(0xfff4e6, 1.9); key.position.set(-4, 8, 6); key.castShadow = true;
+key.shadow.mapSize.set(2048, 2048); key.shadow.radius = 7; key.shadow.bias = -0.0005; key.shadow.normalBias = 0.02;
+Object.assign(key.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 30 }); scene.add(key);
+const rim = new THREE.DirectionalLight(0x22d3ee, 4.2); rim.position.set(5, 4, -6); scene.add(rim);
+const rim2 = new THREE.DirectionalLight(0x7dd3fc, 2.2); rim2.position.set(-6, 5, -5); scene.add(rim2);
+const fill = new THREE.DirectionalLight(0x22c55e, 0.7); fill.position.set(-6, 2, -3); scene.add(fill);
+scene.add(new THREE.HemisphereLight(0xbfe3ff, 0x0b2a3d, 0.55));
+
+// ---------- floor with a soft brand glow ----------
+const gc = document.createElement('canvas'); gc.width = gc.height = 1024; const g2 = gc.getContext('2d');
+const grad = g2.createRadialGradient(512, 512, 0, 512, 512, 512);
+grad.addColorStop(0, '#1d6a8c'); grad.addColorStop(0.25, '#124a63'); grad.addColorStop(0.6, '#0b2a3d'); grad.addColorStop(1, '#06131e');
+g2.fillStyle = grad; g2.fillRect(0, 0, 1024, 1024);
+g2.strokeStyle = 'rgba(34,211,238,.35)'; g2.lineWidth = 2; for (let r = 80; r < 512; r += 80) { g2.beginPath(); g2.arc(512, 512, r, 0, 7); g2.stroke(); }
+g2.strokeStyle = 'rgba(34,197,94,.22)'; for (let a = 0; a < 12; a++) { g2.beginPath(); g2.moveTo(512, 512); g2.lineTo(512 + 512 * Math.cos(a * Math.PI / 6), 512 + 512 * Math.sin(a * Math.PI / 6)); g2.stroke(); }
+const ftex = new THREE.CanvasTexture(gc); ftex.colorSpace = THREE.SRGBColorSpace; ftex.anisotropy = 8;
+const floor = new THREE.Mesh(new THREE.CircleGeometry(13, 96), new THREE.MeshStandardMaterial({ map: ftex, roughness: 0.55, metalness: 0.25 }));
+floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+const marker = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.3, 48), new THREE.MeshBasicMaterial({ color: 0x4ade80, transparent: true, opacity: 0.9 }));
+marker.rotation.x = -Math.PI / 2; marker.position.y = 0.012; marker.visible = false; scene.add(marker);
+// floating particles
+const pg = new THREE.BufferGeometry(), pp = new Float32Array(600);
+for (let i = 0; i < 200; i++) { const a = Math.random() * 7, r = 2 + Math.random() * 10; pp[i * 3] = Math.cos(a) * r; pp[i * 3 + 1] = 0.3 + Math.random() * 5; pp[i * 3 + 2] = Math.sin(a) * r; }
+pg.setAttribute('position', new THREE.BufferAttribute(pp, 3));
+const dust = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0x67e8f9, size: 0.04, transparent: true, opacity: 0.7 })); scene.add(dust);
+
+// ---------- the wolf: model built in Blender (lobo.glb), animated here through its named pivots ----------
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const gltf = await new GLTFLoader().loadAsync('lobo.glb?v=' + Date.now());
+const wolf = gltf.scene; scene.add(wolf);
+let lightMat = null;
+wolf.traverse((o) => {
+  if (!o.isMesh) return;
+  o.castShadow = true; o.receiveShadow = true;
+  if (o.material.name === 'light') lightMat = o.material;
+});
+const N = (n) => { const o = wolf.getObjectByName(n); if (!o) throw new Error('missing node ' + n); return o; };
+const body = N('body'), torso = N('torso'), head = N('head'), tail = N('tail');
+const arms = ['L', 'R'].map((t) => ({ sh: N('sh' + t), el: N('el' + t) }));
+const legs = ['L', 'R'].map((t) => ({ hip: N('hip' + t), knee: N('knee' + t), foot: N('foot' + t) }));
+const lids = [N('lidL'), N('lidR')];
+const rest = { body: body.position.y, head: head.rotation.clone() };
+
+// ---------- post-processing ----------
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const gtao = new GTAOPass(scene, camera, 2, 2);
+gtao.updateGtaoMaterial({ radius: 0.35, distanceExponent: 1.4, thickness: 1.2, scale: 1.25, samples: 16 });
+composer.addPass(gtao);
+const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.28, 0.5, 1.0); composer.addPass(bloom); composer.addPass(new OutputPass());
+
+// ---------- behaviour ----------
+const st = { tx: 0, tz: 0, moving: false, heading: 0.4, phase: 0, auto: true, wait: 2.5, wave: 0, blink: 2, speed: 0 };
+const keys = new Set();
+addEventListener('keydown', (e) => { keys.add(e.key.toLowerCase()); if (e.key.startsWith('Arrow')) e.preventDefault(); });
+addEventListener('keyup', (e) => keys.delete(e.key.toLowerCase()));
+const ray = new THREE.Raycaster(), ptr = new THREE.Vector2(); let downAt = null;
+canvas.addEventListener('pointerdown', (e) => { downAt = [e.clientX, e.clientY]; });
+canvas.addEventListener('pointerup', (e) => {
+  if (!downAt || Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return;
+  ptr.set(e.clientX / innerWidth * 2 - 1, -(e.clientY / innerHeight) * 2 + 1); ray.setFromCamera(ptr, camera);
+  const hit = ray.intersectObject(floor)[0]; if (!hit) return;
+  goTo(hit.point.x, hit.point.z); st.auto = false; syncBtn();
+});
+function goTo(x, z) { const r = Math.hypot(x, z), k = r > 8.5 ? 8.5 / r : 1; st.tx = x * k; st.tz = z * k; st.moving = true; marker.position.set(st.tx, 0.012, st.tz); marker.visible = true; }
+const bAuto = document.getElementById('bAuto');
+function syncBtn() { bAuto.textContent = 'Paseo automático: ' + (st.auto ? 'sí' : 'no'); }
+bAuto.addEventListener('click', () => { st.auto = !st.auto; st.wait = 0.3; syncBtn(); });
+document.getElementById('bWave').addEventListener('click', () => { st.wave = 2.4; st.moving = false; marker.visible = false; });
+
+const clock = new THREE.Clock(), tmp = V(0, 0, 0); const lerpAngle = (a, b, t) => a + Math.atan2(Math.sin(b - a), Math.cos(b - a)) * t;
+function tick() {
+  const dt = Math.min(clock.getDelta(), 0.05), t = clock.elapsedTime;
+  const kx = (keys.has('arrowright') || keys.has('d') ? 1 : 0) - (keys.has('arrowleft') || keys.has('a') ? 1 : 0);
+  const kz = (keys.has('arrowdown') || keys.has('s') ? 1 : 0) - (keys.has('arrowup') || keys.has('w') ? 1 : 0);
+  let dx = 0, dz = 0, want = false;
+  if (kx || kz) {
+    const yaw = Math.atan2(camera.position.x - controls.target.x, camera.position.z - controls.target.z);
+    dx = kx * Math.cos(yaw) + kz * Math.sin(yaw); dz = -kx * Math.sin(yaw) + kz * Math.cos(yaw);
+    want = true; st.moving = false; st.auto = false; marker.visible = false; syncBtn();
+  } else if (st.moving) {
+    dx = st.tx - wolf.position.x; dz = st.tz - wolf.position.z;
+    if (Math.hypot(dx, dz) < 0.08) { st.moving = false; marker.visible = false; st.wait = 1.2 + Math.random() * 2; if (Math.random() < 0.45) st.wave = 2.2; } else want = true;
+  } else if (st.auto && st.wave <= 0) {
+    st.wait -= dt; if (st.wait <= 0) { const a = Math.random() * Math.PI * 2, r = 1.5 + Math.random() * 5; goTo(Math.cos(a) * r, Math.sin(a) * r); }
+  }
+  if (st.wave > 0) want = false;
+  const n = Math.hypot(dx, dz) || 1;
+  st.speed += ((want ? 1.7 : 0) - st.speed) * Math.min(1, dt * 8);
+  if (want) st.heading = lerpAngle(st.heading, Math.atan2(dx / n, dz / n), Math.min(1, dt * 9));
+  else if (st.wave > 0) st.heading = lerpAngle(st.heading, Math.atan2(camera.position.x - wolf.position.x, camera.position.z - wolf.position.z), Math.min(1, dt * 6));
+  wolf.rotation.y = st.heading;
+  wolf.position.x += Math.sin(st.heading) * st.speed * dt; wolf.position.z += Math.cos(st.heading) * st.speed * dt;
+  const rr = Math.hypot(wolf.position.x, wolf.position.z); if (rr > 9) { wolf.position.x *= 9 / rr; wolf.position.z *= 9 / rr; }
+
+  // walk cycle with knees and elbows
+  const w = st.speed / 1.7; st.phase += dt * 9 * w;
+  legs.forEach((L, i) => {
+    const ph = st.phase + i * Math.PI, sw = Math.sin(ph);
+    L.hip.rotation.x = -sw * 0.62 * w; L.knee.rotation.x = Math.max(0, Math.cos(ph + 0.35)) * 1.05 * w; L.foot.rotation.x = (sw * 0.35 - Math.max(0, Math.cos(ph + 0.35)) * 0.3) * w;
+  });
+  arms.forEach((A, i) => {
+    const sw = Math.sin(st.phase + (1 - i) * Math.PI);
+    A.sh.rotation.x = -sw * 0.55 * w; A.el.rotation.x = -(0.22 + 0.45 * w * (0.5 + 0.5 * sw));
+  });
+  body.position.y = rest.body + Math.abs(Math.cos(st.phase)) * 0.045 * w - 0.02 * w + Math.sin(t * 1.8) * 0.006 * (1 - w);
+  torso.rotation.y = Math.sin(st.phase) * 0.14 * w; torso.rotation.z = Math.cos(st.phase) * 0.03 * w; body.rotation.x = 0.07 * w;
+  head.rotation.y = -Math.sin(st.phase) * 0.07 * w + Math.sin(t * 0.6) * 0.14 * (1 - w); head.rotation.z = Math.sin(t * 0.9) * 0.03; head.rotation.x = Math.sin(t * 1.8) * 0.02 - 0.03 * w;
+  torso.scale.y = 1 + Math.sin(t * 1.8) * 0.012 * (1 - w);
+  tail.rotation.y = Math.sin(t * (3 + w * 6)) * (0.3 + w * 0.2); tail.rotation.x = Math.sin(t * 2) * 0.06;
+  if (st.wave > 0) {
+    st.wave -= dt; const k = Math.min(1, (2.4 - st.wave) * 4, st.wave * 4);
+    arms[1].sh.rotation.z = k * (2.2 + Math.sin(t * 11) * 0.25); arms[1].sh.rotation.x = -k * 0.2; arms[1].el.rotation.x = -0.22 - k * 0.5;
+  } else arms[1].sh.rotation.z += (0 - arms[1].sh.rotation.z) * Math.min(1, dt * 10);
+  st.blink -= dt; const closing = st.blink < 0.12; lids.forEach((l) => { l.rotation.x += ((closing ? 1.0 : 0) - l.rotation.x) * Math.min(1, dt * 30); });
+  if (st.blink < 0) st.blink = 2.5 + Math.random() * 3;
+  if (lightMat) lightMat.emissiveIntensity = 5 + Math.sin(t * 3) * 2; dust.rotation.y = t * 0.02;
+
+  controls.target.lerp(tmp.set(wolf.position.x, 1.25, wolf.position.z), Math.min(1, dt * 3));
+  controls.update(); composer.render(); requestAnimationFrame(tick);
+}
+function resize() { const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); composer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize); resize(); tick();
+window.__wolf = { st, wolf, camera, controls, names: (() => { const a = []; wolf.traverse((o) => a.push(o.name)); return a; })() };
+</script>
+</body>
+</html>
