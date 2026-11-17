@@ -208,9 +208,9 @@ FUR, FURD, WHITE, EAR = lin(0x2C62A0), lin(0x173B63), lin(0xE9F1F8), lin(0x1FB6C
 M = {
     "skin": material("fur", rough=0.72, sheen=0.3, sheen_tint=0x9cc8ee, vcol=True),
     "fur": material("fur_plain", 0x2C62A0, 0.72, 0.3, 0x9cc8ee),
-    "hood": material("hoodie", 0x17344F, 0.9, 0.5, 0x5f95c6),
+    "hood": material("hoodie", 0x0E5A2B, 0.9, 0.12, 0x22C55E),      # brand green
     "pants": material("pants", 0x0D2236, 0.92, 0.35, 0x3f6c96),
-    "green": material("green", 0x22C55E, 0.8, 0.4, 0xbbf7d0),
+    "green": material("trim", 0xE9F1F8, 0.8, 0.3),                    # collar, soles: light trim on the green hoodie
     "white": material("white", 0xE9F1F8, 0.7, 0.3),
     "ink": material("ink", 0x07131E, 0.15, coat=1.0),
     "gloss": material("gloss", 0xEEF3F8, 0.2, coat=1.0),
@@ -413,9 +413,10 @@ paint(tail_o, lambda p: mix(mix(FUR, FURD, sm(0.15, 0.6, (R(0.5) @ p).y) * 0.7),
 bpy.context.view_layer.update()
 for o in scene.objects:
     o.select_set(True)
-bpy.ops.export_scene.gltf(filepath=OUT + "/lobo.glb", export_format="GLB", use_selection=True, export_apply=True, export_yup=True, export_cameras=False, export_lights=False,
-                          export_draco_mesh_compression_enable=True, export_draco_mesh_compression_level=6,
-                          export_draco_position_quantization=14, export_draco_normal_quantization=10, export_draco_color_quantization=10)
+if "sinexport" not in sys.argv:
+    bpy.ops.export_scene.gltf(filepath=OUT + "/lobo.glb", export_format="GLB", use_selection=True, export_apply=True, export_yup=True, export_cameras=False, export_lights=False,
+                              export_draco_mesh_compression_enable=True, export_draco_mesh_compression_level=6,
+                              export_draco_position_quantization=14, export_draco_normal_quantization=10, export_draco_color_quantization=10)
 print("GLB written", sum(len(o.data.vertices) for o in scene.objects if o.type == "MESH"), "vertices")
 
 # ---------------------------------------------------------------- preview renders
@@ -473,3 +474,42 @@ if RENDER:
         scene.render.filepath = OUT + ("/final/lobo_" if FINAL else "/render_") + name + ".png"
         bpy.ops.render.render(write_still=True)
         print("rendered", name, flush=True)
+
+# ---------------------------------------------------------------- poses for social pieces (transparent background)
+POSES = {
+    # joint: (x, y, z) in the same convention the viewer animates (three.js 'XYZ')
+    "saludo": {"shR": (-0.55, 0, 1.95), "elR": (-1.0, 0, 0), "elL": (-0.25, 0, 0), "head": (0, 0, -0.08)},
+    "explica": {"shL": (-0.25, 0, -1.45), "elL": (-0.35, 0, 0), "shR": (0.1, 0, 0.25), "elR": (-0.9, 0, 0), "head": (0, -0.22, 0.05)},
+    "celebra": {"shR": (-0.75, 0, 1.9), "shL": (-0.75, 0, -1.9), "elR": (-0.9, 0, 0), "elL": (-0.9, 0, 0), "hipR": (0, 0, 0.14), "hipL": (0, 0, -0.14), "head": (-0.1, 0, 0)},
+    "piensa": {"shR": (-0.95, 0, -0.45), "elR": (-1.7, 0, -0.95), "elL": (-0.3, 0, 0), "head": (0.06, 0.12, -0.1)},
+    "camina": {"hipL": (-0.55, 0, 0), "kneeL": (0.2, 0, 0), "hipR": (0.5, 0, 0), "kneeR": (0.85, 0, 0), "shR": (-0.55, 0, 0), "shL": (0.5, 0, 0), "elR": (-0.7, 0, 0), "elL": (-0.5, 0, 0), "head": (-0.03, 0, 0)},
+}
+if RENDER and "poses" in sys.argv:
+    if "verde" in sys.argv:
+        hb = M["hood"].node_tree.nodes["Principled BSDF"]
+        hb.inputs["Base Color"].default_value = (*lin(0x0E5A2B), 1); hb.inputs["Sheen Tint"].default_value = (*lin(0x22C55E), 1); hb.inputs["Sheen Weight"].default_value = 0.12
+        gb = M["green"].node_tree.nodes["Principled BSDF"]
+        gb.inputs["Base Color"].default_value = (*lin(0xE9F1F8), 1)
+        bpy.data.objects["rim"].data.color = lin(0x4ADE80); bpy.data.objects["rim"].data.energy = 700; bpy.data.objects["fill"].data.color = lin(0x22D3EE)
+    scene.render.film_transparent = True
+    fl.hide_render = True; wall.hide_render = True; glow_o.hide_render = True
+    C = Matrix.Rotation(math.pi / 2, 4, "X")
+    joints = sorted({j for ps in POSES.values() for j in ps})
+    rest = {j: bpy.data.objects[j].rotation_euler.copy() for j in joints}
+    scene.render.resolution_x, scene.render.resolution_y = 1600, 2000
+    scene.cycles.samples = 72
+    if "prueba" in sys.argv:
+        scene.render.resolution_percentage = 30; scene.cycles.samples = 16
+    cam_d.lens = 70; cam.location = (1.4, -6.2, 2.0)
+    cam.rotation_euler = (Vector((0, 0, 1.46)) - Vector(cam.location)).to_track_quat("-Z", "Y").to_euler()
+    want = [a[5:] for a in sys.argv if a.startswith("pose_")]
+    for name, ps in POSES.items():
+        if want and name not in want:
+            continue
+        for j in joints:
+            bpy.data.objects[j].rotation_euler = rest[j]
+        for j, r in ps.items():
+            bpy.data.objects[j].rotation_euler = (C @ R(*r) @ C.inverted()).to_euler()
+        scene.render.filepath = OUT + "/poses/lobo_" + name + ".png"
+        bpy.ops.render.render(write_still=True)
+        print("rendered pose", name, flush=True)

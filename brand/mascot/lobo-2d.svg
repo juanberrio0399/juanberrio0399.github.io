@@ -5,9 +5,9 @@
     <radialGradient id="fur" cx="36%" cy="24%" r="85%"><stop offset="0" stop-color="#7FB2E0"/><stop offset=".45" stop-color="#3A6C9D"/><stop offset="1" stop-color="#152E49"/></radialGradient>
     <radialGradient id="mask" cx="42%" cy="25%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#E3EEF7"/><stop offset="1" stop-color="#93B2CD"/></radialGradient>
     <radialGradient id="snout" cx="42%" cy="26%" r="80%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".65" stop-color="#EEF5FB"/><stop offset="1" stop-color="#B4CCE0"/></radialGradient>
-    <radialGradient id="hood" cx="34%" cy="12%" r="100%"><stop offset="0" stop-color="#35668F"/><stop offset=".45" stop-color="#16324D"/><stop offset="1" stop-color="#07131E"/></radialGradient>
-    <linearGradient id="hoodBack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E2439"/><stop offset="1" stop-color="#040C14"/></linearGradient>
-    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6EE7A0"/><stop offset=".5" stop-color="#22C55E"/><stop offset="1" stop-color="#0F7A3A"/></linearGradient>
+    <radialGradient id="hood" cx="34%" cy="12%" r="100%"><stop offset="0" stop-color="#2FA35A"/><stop offset=".45" stop-color="#136B34"/><stop offset="1" stop-color="#052A12"/></radialGradient>
+    <linearGradient id="hoodBack" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0B3D1E"/><stop offset="1" stop-color="#03170A"/></linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".5" stop-color="#E9F1F8"/><stop offset="1" stop-color="#B4C4D4"/></linearGradient>
     <linearGradient id="cup" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".55" stop-color="#DCE6EF"/><stop offset="1" stop-color="#8FA5B8"/></linearGradient>
     <radialGradient id="iris" cx="50%" cy="65%" r="60%"><stop offset="0" stop-color="#CFFAFE"/><stop offset=".55" stop-color="#22D3EE"/><stop offset="1" stop-color="#075A70"/></radialGradient>
     <radialGradient id="nose" cx="36%" cy="24%" r="80%"><stop offset="0" stop-color="#46586A"/><stop offset=".5" stop-color="#121C27"/><stop offset="1" stop-color="#020507"/></radialGradient>
@@ -74,11 +74,11 @@
       <!-- hoodie body with volume -->
       <use href="#body" fill="url(#hood)"/>
       <g clip-path="url(#bodyClip)">
-        <ellipse cx="270" cy="660" rx="90" ry="50" fill="#9CC8EE" opacity=".22" filter="url(#b26)"/>
+        <ellipse cx="270" cy="660" rx="90" ry="50" fill="#BBF7D0" opacity=".22" filter="url(#b26)"/>
         <path d="M236 640 C214 700 208 764 212 820" fill="none" stroke="#02080E" stroke-width="12" opacity=".45" filter="url(#b6)"/>
         <path d="M564 640 C586 700 592 764 588 820" fill="none" stroke="#02080E" stroke-width="12" opacity=".5" filter="url(#b6)"/>
         <path d="M300 820 C300 770 330 740 400 740 C470 740 500 770 500 820" fill="none" stroke="#02080E" stroke-width="10" opacity=".35" filter="url(#b6)"/>
-        <path d="M300 820 C300 770 330 740 400 740 C470 740 500 770 500 820" fill="none" stroke="#5B8DBB" stroke-width="2" stroke-dasharray="7 7" opacity=".6"/>
+        <path d="M300 820 C300 770 330 740 400 740 C470 740 500 770 500 820" fill="none" stroke="#86EFAC" stroke-width="2" stroke-dasharray="7 7" opacity=".6"/>
         <use href="#body" fill="url(#sideShade)"/>
         <ellipse cx="400" cy="610" rx="170" ry="46" fill="#02080E" opacity=".65" filter="url(#b14)"/>
       </g>
@@ -91,7 +91,7 @@
 
       <!-- collar -->
       <path d="M326 574 C360 612 440 612 474 574 L460 642 C430 662 370 662 340 642 Z" fill="url(#green)"/>
-      <path d="M330 590 C364 624 436 624 470 590" fill="none" stroke="#0A4A24" stroke-width="10" opacity=".45" filter="url(#b6)"/>
+      <path d="M330 590 C364 624 436 624 470 590" fill="none" stroke="#51667A" stroke-width="10" opacity=".45" filter="url(#b6)"/>
       <path d="M338 640 C370 660 430 660 462 640" fill="none" stroke="#BBF7D0" stroke-width="3" opacity=".7"/>
       <path d="M336 596 C366 628 434 628 464 596" fill="none" stroke="#DCFCE7" stroke-width="2" stroke-dasharray="6 6" opacity=".7"/>
       <path d="M336 589 L340 623 M345 594 L348 628 M354 599 L357 633 M364 603 L366 637 M373 606 L374 640 M382 608 L383 642 M391 610 L392 644 M400 610 L400 644 M410 609 L409 643 M419 608 L418 642 M428 606 L426 640 M437 602 L435 636 M446 598 L444 632 M456 594 L452 628 M465 589 L461 623" fill="none" stroke="#0B5C2E" stroke-opacity=".5" stroke-width="2" stroke-linecap="round"/>
