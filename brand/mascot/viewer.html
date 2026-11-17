@@ -12,17 +12,23 @@
   .btns{position:fixed;right:16px;bottom:14px;display:flex;gap:8px}
   button{background:#123A5A;color:#F5FAFF;border:1px solid #22D3EE55;border-radius:10px;padding:8px 14px;font:600 13px Inter,'Segoe UI',sans-serif;cursor:pointer}
   button:hover{border-color:#22D3EE}
+  .load{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#F5FAFF;font-size:15px;font-weight:600;background:#06131E;transition:opacity .4s}
+  .load.done{opacity:0;pointer-events:none}
+  .bar{width:220px;height:6px;border-radius:3px;background:#123A5A;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#22C55E,#22D3EE);transition:width .2s}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body>
 <canvas id="c"></canvas>
+<div class="load" id="load" role="status"><span id="loadTxt">Cargando el lobo…</span><div class="bar"><i id="loadBar"></i></div></div>
 <div class="hud"><b>Clic en el piso</b>: camina hasta ahí · <b>flechas / WASD</b>: lo manejas · <b>arrastrar</b>: girar la cámara · <b>rueda</b>: acercar</div>
 <div class="btns"><button id="bWave">Saludar</button><button id="bAuto">Paseo automático: sí</button></div>
 <script type="module">
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -73,7 +79,16 @@ const dust = new THREE.Points(pg, new THREE.PointsMaterial({ color: 0x67e8f9, si
 
 // ---------- the wolf: model built in Blender (lobo.glb), animated here through its named pivots ----------
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
-const gltf = await new GLTFLoader().loadAsync('lobo.glb?v=' + Date.now());
+const loadEl = document.getElementById('load'), loadTxt = document.getElementById('loadTxt'), loadBar = document.getElementById('loadBar');
+const draco = new DRACOLoader().setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/libs/draco/gltf/');
+let gltf;
+try {
+  gltf = await new GLTFLoader().setDRACOLoader(draco).loadAsync('lobo.glb', (e) => { if (e.total) loadBar.style.width = Math.round(100 * e.loaded / e.total) + '%'; });
+} catch (err) {
+  loadTxt.textContent = 'No se pudo cargar el modelo. Recarga la página.';
+  throw err;
+}
+loadBar.style.width = '100%'; loadEl.classList.add('done');
 const wolf = gltf.scene; scene.add(wolf);
 let lightMat = null;
 wolf.traverse((o) => {
