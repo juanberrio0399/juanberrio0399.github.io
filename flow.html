@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- CSP for this page: same as the site policy. No inline scripts and no style attributes in the markup. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; base-uri 'self'; form-action 'none'" />
+<title>How each project works, end to end — Juan Berrio</title>
+<meta name="description" content="Juan Berrio's projects as animated data flows: every stage of the process, what comes in, what goes out, how long each stage takes manually versus automated, and what stays under control. Example data." />
+<link rel="canonical" href="https://juanberrio0399.github.io/flow.html" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="How each project works, end to end — Juan Berrio" />
+<meta property="og:description" content="Five projects as animated data flows: what happens at each stage, manual versus automated time, and what stays under control." />
+<meta property="og:url" content="https://juanberrio0399.github.io/flow.html" />
+<meta property="og:image" content="https://juanberrio0399.github.io/og-image.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/css/main.css" />
+<link rel="stylesheet" href="assets/css/flow.css" />
+</head>
+<body>
+<nav>
+  <div class="nav-in">
+    <a class="logo" href="./">Juan <span>Berrio</span></a>
+    <div class="nav-r">
+      <a class="nav-back" href="./#projects" data-en="← Portfolio" data-es="← Portafolio">← Portfolio</a>
+      <div class="lang">
+        <button type="button" id="bEN" class="on">EN</button>
+        <button type="button" id="bES">ES</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main>
+  <div class="fl-head">
+    <div class="wrap wide">
+      <span class="tag" data-en="Data flows · example data" data-es="Flujos de datos · datos de ejemplo">Data flows · example data</span>
+      <h1 data-en="See the whole flow at once" data-es="El flujo completo, de extremo a extremo">See the whole flow at once</h1>
+      <p class="lead" data-en="Each node is a stage of the flow. Data leaves the input, goes through every stage and reaches the output, in a continuous loop. Under each stage: what it does and how long it takes manually → automated." data-es="Cada nodo es una etapa del flujo. Los datos salen de la entrada, pasan por cada etapa y llegan a la salida, en ciclo continuo. Debajo de cada etapa: qué hace y cuánto tarda de forma manual → automatizada.">Each node is a stage of the flow. Data leaves the input, goes through every stage and reaches the output, in a continuous loop. Under each stage: what it does and how long it takes manually → automated.</p>
+      <div class="fl-tabs" id="tabs" role="tablist" aria-label="Projects"></div>
+      <p class="fl-blurb"><b id="project"></b> <span id="blurb"></span></p>
+    </div>
+  </div>
+
+  <section id="flow" class="fl-sec" aria-labelledby="flow-title">
+    <h2 id="flow-title" class="sr-only" data-en="The flow" data-es="El flujo">The flow</h2>
+    <div class="stage-wrap">
+      <div class="stage" id="stage">
+        <div class="hud" role="status" aria-live="off">
+          <div class="hud-card done">
+            <span class="hud-l" data-en="Units processed" data-es="Unidades procesadas">Units processed</span>
+            <b id="cDone">0</b>
+          </div>
+          <div class="hud-card hand">
+            <span class="hud-l" data-en="Equivalent manual time" data-es="Tiempo manual equivalente">Equivalent manual time</span>
+            <b id="cHand">0</b>
+          </div>
+          <div class="hud-card auto">
+            <span class="hud-l" data-en="Automated time" data-es="Tiempo automatizado">Automated time</span>
+            <b id="cAuto">0</b>
+          </div>
+          <div class="hud-card saved">
+            <span class="hud-l" data-en="Time saved" data-es="Tiempo ahorrado">Time saved</span>
+            <b id="cSaved">0</b>
+          </div>
+        </div>
+        <ul class="legend">
+          <li class="auto" data-en="Automated · every unit moves at once" data-es="Automatizado · todas las unidades avanzan a la vez">Automated · every unit moves at once</li>
+          <li class="hand" data-en="Manual · one unit at a time" data-es="Manual · una unidad a la vez">Manual · one unit at a time</li>
+          <li class="rej" data-en="Stopped by a validation" data-es="Detenido por una validación">Stopped by a validation</li>
+        </ul>
+        <div class="area" id="area">
+          <svg id="wire" aria-hidden="true" focusable="false"></svg>
+          <div id="nodes"></div>
+        </div>
+      </div>
+      <p class="stage-hint" data-en="Runs in a continuous loop · select a stage to see it in detail below" data-es="Se ejecuta en ciclo continuo · selecciona una etapa para ver su detalle abajo">Runs in a continuous loop · select a stage to see it in detail below</p>
+    </div>
+
+    <div class="wrap wide">
+      <div class="totals">
+        <h3 class="fl-h" id="totTitle"></h3>
+        <div class="tot-grid">
+          <div class="tot hand">
+            <span data-en="Manual" data-es="Manual">Manual</span>
+            <b id="totHandU"></b><small id="totPer"></small>
+            <div class="cmp-bar"><i class="full"></i></div>
+          </div>
+          <div class="tot auto">
+            <span data-en="Automated" data-es="Automatizado">Automated</span>
+            <b id="totAutoU"></b><small id="totPer2"></small>
+            <div class="cmp-bar"><i id="totBarAuto"></i></div>
+          </div>
+          <div class="tot day">
+            <span id="totDayL"></span>
+            <p><b id="totHandD"></b> <em data-en="manual" data-es="manual">manual</em></p>
+            <p><b id="totAutoD"></b> <em data-en="automated" data-es="automatizado">automated</em></p>
+          </div>
+          <div class="tot back">
+            <span data-en="Time saved per day" data-es="Tiempo ahorrado por día">Time saved per day</span>
+            <b id="totBack"></b>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="steps" class="fl-sec sep" aria-labelledby="steps-title">
+    <div class="wrap wide">
+      <h2 id="steps-title" data-en="What happens at each step" data-es="Detalle de cada etapa">What happens at each step</h2>
+      <div class="diagram" id="diagram" role="group" aria-label="Flow steps"></div>
+      <article class="step" aria-live="polite">
+        <div class="step-h">
+          <span class="step-k" id="stK"></span>
+          <h3 id="stName"></h3>
+          <code id="stTech"></code>
+        </div>
+        <p class="step-d" id="stDesc"></p>
+        <div class="io">
+          <div class="io-col">
+            <h4 data-en="Input" data-es="Entrada">Input</h4>
+            <div id="stIn"></div>
+          </div>
+          <div class="io-arrow" aria-hidden="true">→</div>
+          <div class="io-col out">
+            <h4 data-en="Output" data-es="Salida">Output</h4>
+            <div id="stOut"></div>
+          </div>
+        </div>
+        <div class="cmp">
+          <div class="cmp-col hand">
+            <h4 data-en="Manual" data-es="Manual">Manual</h4>
+            <p class="cmp-t"><b id="stHandT"></b> <small id="stPer"></small></p>
+            <div class="cmp-bar"><i class="full"></i></div>
+            <p class="cmp-w" id="stHandW"></p>
+          </div>
+          <div class="cmp-col auto">
+            <h4 data-en="Automated" data-es="Automatizado">Automated</h4>
+            <p class="cmp-t"><b id="stAutoT"></b></p>
+            <div class="cmp-bar"><i id="barAuto"></i></div>
+            <p class="cmp-w" id="stSave"></p>
+          </div>
+          <div class="cmp-col ctrl">
+            <h4 data-en="Control and traceability" data-es="Control y trazabilidad">Control and traceability</h4>
+            <p class="cmp-c" id="stControl"></p>
+          </div>
+        </div>
+        <div class="step-nav">
+          <button type="button" class="btn" id="stPrev" data-en="← Previous" data-es="← Anterior">← Previous</button>
+          <button type="button" class="btn primary" id="stNext" data-en="Next →" data-es="Siguiente →">Next →</button>
+        </div>
+      </article>
+
+      <div class="fl-grid">
+        <div class="fl-card">
+          <h3 class="fl-h" id="outTitle">Output</h3>
+          <div class="output" id="output"></div>
+        </div>
+        <div class="fl-card" id="assumptions">
+          <h3 class="fl-h" data-en="Simulate with your own figures" data-es="Simula con tus propios datos">Simulate with your own figures</h3>
+          <p class="cap" data-en="This is a simulation, not a measurement. Move the sliders and everything on the page recalculates." data-es="Esto es una simulación, no una medición. Mueve los controles y toda la página se recalcula.">This is a simulation, not a measurement. Move the sliders and everything on the page recalculates.</p>
+          <div class="calc-in">
+            <label for="sItems" data-en="Daily volume" data-es="Volumen diario">Daily volume</label>
+            <input type="range" id="sItems" min="10" max="200" step="1" value="60" />
+            <output id="oItems" for="sItems"></output>
+            <label for="sManual" data-en="Manual time per unit" data-es="Tiempo manual por unidad">Manual time per unit</label>
+            <input type="range" id="sManual" min="1" max="30" step="1" value="6" />
+            <output id="oManual" for="sManual"></output>
+            <p class="hand-task"><span id="handTaskL"></span> <em id="handTask"></em></p>
+          </div>
+          <div class="calc-out">
+            <div><b id="calcDay">0 h</b><span id="calcDayL"></span></div>
+            <div class="big"><b id="calcMonth">0 h</b><span id="calcMonthL"></span></div>
+          </div>
+        </div>
+      </div>
+      <h3 class="fl-h facts-h" data-en="What is real in this project" data-es="Lo que sí es real en este proyecto">What is real in this project</h3>
+      <ul class="facts" id="facts"></ul>
+      <p class="note" data-en="Names, files, times and figures on this page are invented for the demo. The facts above describe the real project." data-es="Los nombres, archivos, tiempos y cifras de esta página son inventados para la demo. Los datos de arriba sí describen el proyecto real.">Names, files, times and figures on this page are invented for the demo. The facts above describe the real project.</p>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">© <span id="yr">2026</span> Juan Berrio · Cloud &amp; Data Engineer · Bogotá, Colombia</div></footer>
+
+<script type="module" src="assets/js/flow.js"></script>
+</body>
+</html>

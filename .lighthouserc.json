@@ -2,7 +2,7 @@
   "ci": {
     "collect": {
       "staticDistDir": ".",
-      "url": ["http://localhost/index.html", "http://localhost/playground.html", "http://localhost/case-study-dataforge.html"],
+      "url": ["http://localhost/index.html", "http://localhost/playground.html", "http://localhost/case-study-dataforge.html", "http://localhost/flow.html"],
       "numberOfRuns": 3
     },
     "assert": {

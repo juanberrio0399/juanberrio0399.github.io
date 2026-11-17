@@ -15,6 +15,7 @@ The portfolio of Juan Berrio, Cloud & Data Engineer. Its job is to answer a recr
 | Portfolio with EN/ES toggle, project tabs, print stylesheet (PDF = `window.print()`) | `index.html`, `assets/` |
 | DataForge case study + technical overview, EN/ES (moved from the private `portfolio` repo; this page is now the source) | `case-study-dataforge.html`, `assets/css/case-study.css`, `assets/js/case-study.js` |
 | SQL playground on DuckDB-WASM | `playground.html` |
+| Animated 2D data flows of five projects (stages, manual versus automated time, control) with the detail of each stage, no library | `flow.html`, `assets/js/flow.js`, `assets/js/flow-data.js` |
 | Static HTML/CSS/vanilla JS, no build step; Pages deploys from `main` | `.nojekyll` |
 | CSP in a meta tag (Pages cannot send headers) | `index.html` |
 | Lighthouse CI as a required check; OpenSSF Scorecard weekly; actions pinned by SHA | `.github/workflows/` |
