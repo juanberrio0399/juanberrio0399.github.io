@@ -149,3 +149,11 @@ header .wrap{position:relative}
 .sig{width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:10px;box-shadow:0 0 0 1px var(--line)}
 @media (prefers-reduced-motion:reduce){.mascot{animation:none}}
 @media print{.mascot,.sig{display:none}}
+
+/* Companion: the small wolf that walks in the corner while the page scrolls (assets/js/mascot.js). */
+.buddy{position:fixed;right:20px;bottom:14px;width:74px;aspect-ratio:173/300;z-index:40;pointer-events:none;
+  background:url(../img/wolf-steps.webp) 0 0/1000% 100% no-repeat;opacity:0;transform:translateY(14px);
+  transition:opacity .35s ease,transform .35s ease;filter:drop-shadow(0 3px 4px rgba(15,23,42,.12))}
+.buddy.on{opacity:1;transform:none}
+@media(max-width:760px){.buddy{display:none}}
+@media print{.buddy{display:none}}
