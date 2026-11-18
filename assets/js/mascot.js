@@ -1,52 +1,63 @@
-// The mascot keeps you company down the page: once the header wolf scrolls out of view,
-// a small one appears in the corner, walks while you scroll, stands when you stop and
-// waves at the contact section. No inline styles in the markup, so it fits script-src 'self'.
+// The mascot follows the scroll: once the header wolf leaves the screen, a second one appears in the
+// right margin, turns on itself as the page moves and drifts away, getting smaller towards the end.
+// It is a strip of pre-rendered frames scrubbed by scroll position, eased so it never jumps.
+// No inline styles in the markup, so it fits script-src 'self'.
 (function () {
   var hero = document.querySelector('.mascot');
   if (!hero || !('IntersectionObserver' in window)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  var STEPS = 8, STAND = 8, WAVE = 9, LAST = 9;   // frames in wolf-steps.webp, left to right
-  var STRIDE = 34;                                // pixels of scroll per step
-  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FRAMES = 32;        // one full turn in wolf-turn.webp, left to right
+  var TURNS = 2;          // full turns over the whole page
+  var EASE = 0.14;
 
-  var buddy = document.createElement('div');
-  buddy.className = 'buddy';
-  buddy.setAttribute('aria-hidden', 'true');
-  document.body.appendChild(buddy);
+  var orbit = document.createElement('div');
+  orbit.className = 'orbit';
+  orbit.setAttribute('aria-hidden', 'true');
+  var shadow = document.createElement('div');
+  shadow.className = 'orbit-s';
+  var wolf = document.createElement('div');
+  wolf.className = 'orbit-w';
+  orbit.appendChild(shadow);
+  orbit.appendChild(wolf);
+  document.body.appendChild(orbit);
 
-  var atContact = false, travelled = 0, lastY = window.scrollY, rest = 0, queued = false;
+  var target = 0, now = 0, running = false, ready = false, past = false;
 
-  function show(frame) {
-    buddy.style.backgroundPosition = (frame / LAST * 100) + '% 0';
+  function progress() {
+    var h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+    return max > 0 ? Math.min(1, Math.max(0, h.scrollTop / max)) : 0;
   }
-  function settle() {
-    show(atContact ? WAVE : STAND);
+  function draw() {
+    var frame = ((Math.round(now * TURNS * FRAMES) % FRAMES) + FRAMES) % FRAMES;
+    wolf.style.backgroundPosition = (frame / (FRAMES - 1) * 100) + '% 0';
+    var scale = 1 - 0.45 * now;
+    orbit.style.transform = 'translate3d(0,' + (now * 38).toFixed(2) + 'vh,0) scale(' + scale.toFixed(4) + ')';
+    orbit.style.opacity = ready && past ? (1 - 0.3 * now).toFixed(3) : '0';
+  }
+  function tick() {
+    now += (target - now) * EASE;
+    if (Math.abs(target - now) < 0.0004) { now = target; running = false; } else requestAnimationFrame(tick);
+    draw();
+  }
+  function kick() {
+    target = progress();
+    if (!running) { running = true; requestAnimationFrame(tick); }
   }
 
   new IntersectionObserver(function (es) {
-    buddy.classList.toggle('on', !es[0].isIntersecting);
+    past = !es[0].isIntersecting;
+    draw();
   }).observe(hero);
 
-  var contact = document.getElementById('contact');
-  if (contact) {
-    new IntersectionObserver(function (es) {
-      atContact = es[0].isIntersecting;
-      settle();
-    }, { threshold: 0.35 }).observe(contact);
+  // The strip is only fetched once the page is idle, so it never competes with the first paint.
+  function load() {
+    var img = new Image();
+    img.onload = function () { orbit.classList.add('ready'); ready = true; now = target = progress(); draw(); };
+    img.src = 'assets/img/wolf-turn.webp';
   }
+  if ('requestIdleCallback' in window) requestIdleCallback(load, { timeout: 2500 }); else setTimeout(load, 1200);
 
-  function step() {
-    queued = false;
-    var y = window.scrollY;
-    travelled += Math.abs(y - lastY);
-    lastY = y;
-    if (!calm) show(Math.floor(travelled / STRIDE) % STEPS);
-    clearTimeout(rest);
-    rest = setTimeout(settle, 220);
-  }
-  addEventListener('scroll', function () {
-    if (!queued) { queued = true; requestAnimationFrame(step); }
-  }, { passive: true });
-
-  settle();
+  addEventListener('scroll', kick, { passive: true });
+  addEventListener('resize', kick);
 })();
