@@ -150,11 +150,13 @@ header .wrap{position:relative}
 @media (prefers-reduced-motion:reduce){.mascot{animation:none}}
 @media print{.mascot,.sig{display:none}}
 
-/* Scroll wolf: appears in the right margin after the header, turns and drifts away as the page scrolls (assets/js/mascot.js). */
-.orbit{position:fixed;left:calc(50% + 452px);top:17vh;width:clamp(84px,calc((100vw - 880px)/2 - 28px),170px);z-index:40;
+/* Scroll wolf: appears in the right margin after the header and runs with the page (assets/js/mascot.js). */
+.runner{position:fixed;left:calc(50% + 448px);top:16vh;width:clamp(92px,calc((100vw - 880px)/2 - 24px),184px);z-index:40;
   pointer-events:none;opacity:0;transform-origin:50% 0;transition:opacity .45s ease;will-change:transform,opacity}
-.orbit-w{aspect-ratio:3/5;background:0 0/3200% 100% no-repeat}
-.orbit.ready .orbit-w{background-image:url(../img/wolf-turn.webp)}
-.orbit-s{position:absolute;left:14%;right:14%;bottom:-3%;height:7%;border-radius:50%;background:radial-gradient(closest-side,rgba(15,23,42,.22),rgba(15,23,42,0))}
-@media(max-width:1099px){.orbit{display:none}}
-@media print{.orbit{display:none}}
+.runner-w{aspect-ratio:4/5;background:0 0/2600% 100% no-repeat}
+.runner.ready .runner-w{background-image:url(../img/wolf-run.webp)}
+.runner-s{position:absolute;left:20%;right:20%;bottom:-2%;height:6%;border-radius:50%;
+  background:radial-gradient(closest-side,rgba(15,23,42,.22),rgba(15,23,42,0));transition:transform .2s ease,opacity .2s ease}
+.runner.go .runner-s{transform:scaleX(.8);opacity:.7}
+@media(max-width:1099px){.runner{display:none}}
+@media print{.runner{display:none}}
