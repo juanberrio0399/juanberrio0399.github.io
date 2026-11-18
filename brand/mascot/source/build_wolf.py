@@ -299,7 +299,7 @@ for s, tag in ((-1, "L"), (1, "R")):
     e = node("eye" + tag, head, hp(s * 0.36, 0.06, 0.93, 0.97), yaw=s * 0.36)
     bm = bmesh.new(); ball(bm, 0.125, S(1.12, 0.92, 0.75)); make("eyeball" + tag, bm, e, M["eye"])
     bm = bmesh.new(); ball(bm, 0.08, T(-s * 0.012, -0.006, 0.066) @ S(1, 1, 0.5)); make("iris" + tag, bm, e, M["iris"])
-    bm = bmesh.new(); ball(bm, 0.04, T(-s * 0.012, -0.006, 0.09) @ S(1, 1, 0.5)); ball(bm, 0.04, T(s * 0.015, 0.2 if s > 0 else 0.165, 0.07) @ R(0, 0, 0.42 if s > 0 else -0.3) @ S(3.5, 0.7, 0.9))
+    bm = bmesh.new(); ball(bm, 0.04, T(-s * 0.012, -0.006, 0.09) @ S(1, 1, 0.5)); ball(bm, 0.04, T(s * 0.015, 0.2 if s > 0 else 0.165, 0.03 if "giro" in sys.argv else 0.07) @ R(0, 0, 0.42 if s > 0 else -0.3) @ S(3.5, 0.7, 0.9))
     make("pupil" + tag, bm, e, M["ink"])
     bm = bmesh.new(); ball(bm, 0.016, T(-s * 0.045, 0.026, 0.106), 16); make("glint" + tag, bm, e, M["eye"])
     lid = node("lid" + tag, e)
@@ -415,7 +415,7 @@ for o in scene.objects:
     o.select_set(True)
 if "sinexport" not in sys.argv:
     bpy.ops.export_scene.gltf(filepath=OUT + "/lobo.glb", export_format="GLB", use_selection=True, export_apply=True, export_yup=True, export_cameras=False, export_lights=False,
-                              export_draco_mesh_compression_enable=True, export_draco_mesh_compression_level=6,
+                              export_draco_mesh_compression_enable="sindraco" not in sys.argv, export_draco_mesh_compression_level=6,
                               export_draco_position_quantization=14, export_draco_normal_quantization=10, export_draco_color_quantization=10)
 print("GLB written", sum(len(o.data.vertices) for o in scene.objects if o.type == "MESH"), "vertices")
 
@@ -484,6 +484,46 @@ POSES = {
     "piensa": {"shR": (-0.95, 0, -0.45), "elR": (-1.7, 0, -0.95), "elL": (-0.3, 0, 0), "head": (0.06, 0.12, -0.1)},
     "camina": {"hipL": (-0.55, 0, 0), "kneeL": (0.2, 0, 0), "hipR": (0.5, 0, 0), "kneeR": (0.85, 0, 0), "shR": (-0.55, 0, 0), "shL": (0.5, 0, 0), "elR": (-0.7, 0, 0), "elL": (-0.5, 0, 0), "head": (-0.03, 0, 0)},
 }
+if "ciclo" in sys.argv:
+    # walk cycle for the site companion: 8 steps, then a standing frame and a waving one, all at the same angle
+    cyc = {}
+    for i in range(8):
+        ph = math.tau * i / 8
+        f = {"body": (0.07, 0, 0), "torso": (0, math.sin(ph) * 0.14, math.cos(ph) * 0.03), "head": (-0.03, -math.sin(ph) * 0.07, 0)}
+        for tag, off in (("L", 0.0), ("R", math.pi)):
+            q = ph + off; sw = math.sin(q); kn = max(0.0, math.cos(q + 0.35))
+            f["hip" + tag] = (-sw * 0.62, 0, 0); f["knee" + tag] = (kn * 1.05, 0, 0); f["foot" + tag] = (sw * 0.35 - kn * 0.3, 0, 0)
+        for tag, off in (("L", math.pi), ("R", 0.0)):
+            sw = math.sin(ph + off)
+            f["sh" + tag] = (-sw * 0.55, 0, 0); f["el" + tag] = (-(0.22 + 0.45 * (0.5 + 0.5 * sw)), 0, 0)
+        cyc["paso%d" % i] = f
+    cyc["quieto"] = {"elL": (-0.22, 0, 0), "elR": (-0.22, 0, 0)}
+    cyc["hola"] = dict(POSES["saludo"])
+    POSES = cyc
+if "corre" in sys.argv:
+    # run cycle for the scroll wolf: 12 frames running towards the viewer, 12 running away, a standing frame and a wave
+    def run_frame(i, n=12):
+        ph = math.tau * i / n
+        f = {"body": (0.3, 0, 0), "torso": (0, math.sin(ph) * 0.24, 0), "head": (-0.22, -math.sin(ph) * 0.12, 0), "tail": (-0.55, math.sin(ph) * 0.3, 0),
+             "_lift": 0.02 + 0.11 * abs(math.sin(ph + 0.6))}
+        for tag, off in (("L", 0.0), ("R", math.pi)):
+            q = ph + off; sw = math.sin(q); kn = max(0.0, math.cos(q + 0.35))
+            f["hip" + tag] = (-sw * 1.0 - 0.15, 0, 0); f["knee" + tag] = (0.2 + kn * 1.55, 0, 0); f["foot" + tag] = (sw * 0.45 - kn * 0.35, 0, 0)
+        for tag, off in (("L", math.pi), ("R", 0.0)):
+            sw = math.sin(ph + off)
+            f["sh" + tag] = (-sw * 1.05 + 0.1, 0, 0); f["el" + tag] = (-1.45 - 0.25 * sw, 0, 0)
+        return f
+    POSES = {}
+    for i in range(12):
+        POSES["c%02d" % i] = dict(run_frame(i), _rot=-0.5)
+    for i in range(12):
+        POSES["e%02d" % i] = dict(run_frame(i), _rot=math.pi + 0.5)
+    POSES["quieto"] = {"elL": (-0.22, 0, 0), "elR": (-0.22, 0, 0), "_rot": -0.3}
+    POSES["hola"] = dict(shR=(-0.55, 0, 1.95), elR=(-1.0, 0, 0), elL=(-0.25, 0, 0), head=(0, 0, -0.08), _rot=-0.3)
+if "giro" in sys.argv:
+    # turntable for the scroll-driven wolf on the site: one full turn, standing
+    GIRO = 32
+    POSES = {"g%02d" % i: {"elL": (-0.22, 0, 0), "elR": (-0.22, 0, 0), "_rot": -math.tau * i / GIRO} for i in range(GIRO)}
 if RENDER and "poses" in sys.argv:
     if "verde" in sys.argv:
         hb = M["hood"].node_tree.nodes["Principled BSDF"]
@@ -494,7 +534,7 @@ if RENDER and "poses" in sys.argv:
     scene.render.film_transparent = True
     fl.hide_render = True; wall.hide_render = True; glow_o.hide_render = True
     C = Matrix.Rotation(math.pi / 2, 4, "X")
-    joints = sorted({j for ps in POSES.values() for j in ps})
+    joints = sorted({j for ps in POSES.values() for j in ps if not j.startswith("_")})
     rest = {j: bpy.data.objects[j].rotation_euler.copy() for j in joints}
     scene.render.resolution_x, scene.render.resolution_y = 1600, 2000
     scene.cycles.samples = 72
@@ -502,14 +542,29 @@ if RENDER and "poses" in sys.argv:
         scene.render.resolution_percentage = 30; scene.cycles.samples = 16
     cam_d.lens = 70; cam.location = (1.4, -6.2, 2.0)
     cam.rotation_euler = (Vector((0, 0, 1.46)) - Vector(cam.location)).to_track_quat("-Z", "Y").to_euler()
+    if "giro" in sys.argv or "corre" in sys.argv:
+        scene.render.resolution_percentage = 30; scene.cycles.samples = 48
+        cam.location = (0.0, -6.6, 2.1)
+        cam.rotation_euler = (Vector((0, 0, 1.46)) - Vector(cam.location)).to_track_quat("-Z", "Y").to_euler()
+    if "ciclo" in sys.argv:
+        bpy.data.objects["wolf"].rotation_euler = (0, 0, -0.5)
+        scene.render.resolution_percentage = 30; scene.cycles.samples = 48
+        cam.location = (0.0, -6.4, 1.9)
+        cam.rotation_euler = (Vector((0, 0, 1.46)) - Vector(cam.location)).to_track_quat("-Z", "Y").to_euler()
     want = [a[5:] for a in sys.argv if a.startswith("pose_")]
     for name, ps in POSES.items():
         if want and name not in want:
             continue
         for j in joints:
             bpy.data.objects[j].rotation_euler = rest[j]
+        bpy.data.objects["body"].location = (0, 0, 0)
         for j, r in ps.items():
-            bpy.data.objects[j].rotation_euler = (C @ R(*r) @ C.inverted()).to_euler()
+            if j == "_rot":
+                bpy.data.objects["wolf"].rotation_euler = (0, 0, r)
+            elif j == "_lift":
+                bpy.data.objects["body"].location = (0, 0, r)
+            else:
+                bpy.data.objects[j].rotation_euler = (C @ R(*r) @ C.inverted()).to_euler()
         scene.render.filepath = OUT + "/poses/lobo_" + name + ".png"
         bpy.ops.render.render(write_still=True)
         print("rendered pose", name, flush=True)
