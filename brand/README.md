@@ -61,6 +61,10 @@ The first line writes the model and the four renders; the second writes the pose
 
 To see it walk, serve the repo locally and open `brand/mascot/viewer.html`.
 
+## README headers
+
+Every repo opens with the same animated header: the wolf floating next to the repo name, tagline and stack. Generator and the list of repos in [`readme-banners/`](readme-banners/): `python readme_banner.py --all out` rebuilds them all; copy each one to the repo's `docs/banner.svg`.
+
 ## Rules of use
 
 - Keep the wolf's colours; do not recolour or stretch it.

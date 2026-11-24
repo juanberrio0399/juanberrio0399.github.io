@@ -1,0 +1,5 @@
+serverless-rag-assistant|Serverless RAG Assistant|Answers grounded in your own documents, on the edge|Cloudflare Workers|Workers AI|Vectorize|D1|Workflows
+dockerized-data-tool|Dockerized Data Tool|A CSV CLI shipped through a hardened container pipeline|Python|pandas|Docker|Trivy|GitHub Actions
+video-forge|video-forge|A YouTube Shorts factory that runs itself in the cloud|GitHub Actions|Cloudflare Workers|R2|Kokoro TTS|FFmpeg
+juanberrio0399.github.io|juanberrio0399.github.io|My portfolio site, with a SQL playground in the browser|HTML/CSS|JavaScript|DuckDB-WASM|GitHub Pages|Lighthouse CI
+juanberrio0399|Juan Berrio|Cloud & Data Engineer · Bogotá, Colombia · remote|Python|SQL|DuckDB|Cloudflare|GitHub Actions
