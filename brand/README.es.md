@@ -61,6 +61,10 @@ La primera línea escribe el modelo y los cuatro renders; la segunda, las poses.
 
 Para verlo caminar, sirve el repo en local y abre `brand/mascot/viewer.html`.
 
+## Encabezados de los README
+
+Todos los repos abren con el mismo encabezado animado: el lobo flotando junto al nombre del repo, su lema y su stack. El generador y la lista de repos están en [`readme-banners/`](readme-banners/): `python readme_banner.py --all salida` los rehace todos; cada uno se copia al `docs/banner.svg` de su repo.
+
 ## Reglas de uso
 
 - Mantener los colores del lobo; no recolorearlo ni estirarlo.
