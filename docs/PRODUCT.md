@@ -45,7 +45,7 @@ User stories, flows and data for <https://juanberrio0399.github.io>. How it's bu
 #### HU-04 · See impact at a glance
 **As** a hiring manager **I want** the key numbers first **so that** I can decide quickly whether to keep reading.
 **Acceptance criteria**
-- The top of the page shows 6+ years, 36M+ records processed, 13K+ Excel files automated, ~$0 infra cost and the number of projects in the tabs (9).
+- The top of the page shows 3+ years in data (6 professional), 36M+ records processed, 13K+ Excel files automated, ~$0 infra cost and the number of projects in the tabs (9).
 - Each project tab ends with an "Impact" line in the selected language.
 **Where it lives:** `index.html`
 
@@ -234,8 +234,8 @@ A Scorecard drop points to the file and line in the Security tab.
 | Data | Comes from | Stored in | Read by | Sensitivity | Retention |
 |---|---|---|---|---|---|
 | Profile text, projects, numbers | Me | `index.html`, `case-study-dataforge.html` | Any visitor | Public | Until I change it |
-| CV PDFs | Exported from my private CV repo | `assets/cv/` | Any visitor | Public (includes my email and phone on purpose) | Until replaced |
-| Contact details (email, phone, LinkedIn) | Me | `index.html` and JSON-LD | Visitors, search engines | Public by choice | Until I change it |
+| CV PDFs | Exported from my private CV repo | `assets/cv/` | Any visitor | Public (includes my email, no phone) | Until replaced |
+| Contact details (email, LinkedIn; no phone) | Me | `index.html` and JSON-LD | Visitors, search engines | Public by choice | Until I change it |
 | Playground snapshot (repos, languages, commits per day, PRs) | GitHub REST API, public repos only | `assets/data/playground/*.arrow` | The visitor's browser | Public | Until the next refresh |
 | Language preference | The visitor's click | The visitor's `localStorage` (`lang`) | The site's scripts | Not personal | Until the visitor clears it |
 | SQL the visitor writes | The visitor | The browser's memory | DuckDB-WASM in that tab | Stays local | Gone when the tab closes |

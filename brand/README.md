@@ -28,7 +28,7 @@ Every piece ends with the same line:
 
 ```
 Juan Berrio
-Cloud & Data Engineer                         juanberrio0399.github.io
+Data & Analytics Engineer                     juanberrio0399.github.io
 ```
 
 ## Mascot
@@ -64,6 +64,10 @@ To see it walk, serve the repo locally and open `brand/mascot/viewer.html`.
 ## README headers
 
 Every repo opens with the same animated header: the wolf floating next to the repo name, tagline and stack. Generator and the list of repos in [`readme-banners/`](readme-banners/): `python readme_banner.py --all out` rebuilds them all; copy each one to the repo's `docs/banner.svg`.
+
+## Social preview
+
+`og-image.png` (1200×630, the picture LinkedIn and WhatsApp show for a link to the site) comes from [`og/og_image.py`](og/og_image.py). Change the texts at the top of the script and run `python brand/og/og_image.py` from the repo root.
 
 ## Rules of use
 
