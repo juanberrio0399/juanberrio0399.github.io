@@ -45,7 +45,7 @@ Historias de usuario, flujos y datos de <https://juanberrio0399.github.io>. Cóm
 #### HU-04 · Ver el impacto de un vistazo
 **Como** líder que contrata **quiero** las cifras clave primero **para** decidir rápido si sigo leyendo.
 **Criterios de aceptación**
-- Arriba de la página aparecen 6+ años, 36M+ registros procesados, 13K+ archivos Excel automatizados, ~$0 de infraestructura y el número de proyectos de las pestañas (9).
+- Arriba de la página aparecen 3+ años en datos (6 de experiencia), 36M+ registros procesados, 13K+ archivos Excel automatizados, ~$0 de infraestructura y el número de proyectos de las pestañas (9).
 - Cada pestaña de proyecto termina con una línea de "Impacto" en el idioma elegido.
 **Dónde vive:** `index.html`
 
@@ -234,8 +234,8 @@ Si baja el Scorecard, la pestaña Security señala el archivo y la línea.
 | Dato | De dónde viene | Dónde se guarda | Quién lo lee | Sensibilidad | Cuánto dura |
 |---|---|---|---|---|---|
 | Texto del perfil, proyectos, cifras | Yo | `index.html`, `case-study-dataforge.html` | Cualquier visitante | Pública | Hasta que lo cambie |
-| Hojas de vida en PDF | Exportadas de mi repo privado de hojas de vida | `assets/cv/` | Cualquier visitante | Pública (incluye mi correo y teléfono a propósito) | Hasta que se reemplacen |
-| Datos de contacto (correo, teléfono, LinkedIn) | Yo | `index.html` y el JSON-LD | Visitantes, buscadores | Pública por decisión propia | Hasta que los cambie |
+| Hojas de vida en PDF | Exportadas de mi repo privado de hojas de vida | `assets/cv/` | Cualquier visitante | Pública (incluye mi correo, sin teléfono) | Hasta que se reemplacen |
+| Datos de contacto (correo y LinkedIn, sin teléfono) | Yo | `index.html` y el JSON-LD | Visitantes, buscadores | Pública por decisión propia | Hasta que los cambie |
 | Snapshot del playground (repos, lenguajes, commits por día, PRs) | API REST de GitHub, solo repos públicos | `assets/data/playground/*.arrow` | El navegador del visitante | Pública | Hasta la siguiente actualización |
 | Preferencia de idioma | El clic del visitante | `localStorage` del visitante (`lang`) | Los scripts del sitio | No es personal | Hasta que el visitante la borre |
 | SQL que escribe el visitante | El visitante | La memoria del navegador | DuckDB-WASM en esa pestaña | Se queda local | Se pierde al cerrar la pestaña |

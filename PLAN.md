@@ -6,7 +6,7 @@ How it works is in the [README](README.md). This file says where the project sta
 
 ## What it is
 
-The portfolio of Juan Berrio, Cloud & Data Engineer. Its job is to answer a recruiter in one page and to show the work instead of describing it: a SQL playground runs real queries over a snapshot of public GitHub activity with DuckDB-WASM, in the visitor's browser.
+The portfolio of Juan Berrio, Data & Analytics Engineer. Its job is to answer a recruiter in one page and to show the work instead of describing it: a SQL playground runs real queries over a snapshot of public GitHub activity with DuckDB-WASM, in the visitor's browser.
 
 ## How it works today
 
