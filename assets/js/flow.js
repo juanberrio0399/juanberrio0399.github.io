@@ -12,7 +12,7 @@ const WORK_DAYS = 22;             // working days in a month, for the calculator
 const MAX_RATIO = 40;             // the manual unit is at most this many times slower on screen
 const R = 20, TOP = 36, PAD = 12; // node radius, room above each row, side padding (px)
 const MIN_CELL = 112;             // narrowest a stage may get before the rail folds into another row
-const GREEN = [22, 163, 74], BLUE = [29, 78, 216];
+const GREEN = [22, 163, 74], NAVY = [18, 58, 90]; // brand green -> brand navy (#123A5A)
 const NS = 'http://www.w3.org/2000/svg';
 
 const state = { lang: 'en', flow: 0, step: 0, items: FLOWS[0].items, manualMin: FLOWS[0].manualMin, visible: true, t0: 0 };
@@ -21,7 +21,7 @@ const tr = (o) => (o && typeof o === 'object' && 'en' in o ? o[state.lang] : o);
 const flow = () => FLOWS[state.flow];
 const clamp01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
 const smooth = (x) => x * x * (3 - 2 * x);
-const mix = (t) => 'rgb(' + GREEN.map((g, i) => Math.round(g + (BLUE[i] - g) * t)).join(',') + ')';
+const mix = (t) => 'rgb(' + GREEN.map((g, i) => Math.round(g + (NAVY[i] - g) * t)).join(',') + ')';
 const fmt = (n, d) => n.toLocaleString(state.lang === 'es' ? 'es-CO' : 'en-US', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 });
 function el(tag, cls, text) {
   const e = document.createElement(tag);

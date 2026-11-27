@@ -1,9 +1,9 @@
 :root{
   --bg:#ffffff; --bg2:#f8fafc; --ink:#0f172a; --body:#334155; --mut:#64748b;
-  --line:#e6eaf0; --accent:#1d4ed8; --accent-soft:#eff4ff; --maxw:880px;
+  --line:#e6eaf0; --accent:#15803D; --accent-soft:#ecfdf3; --maxw:880px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:72px} /* sticky nav is ~57px tall: anchors land below it */
 body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--body);
   line-height:1.7;-webkit-font-smoothing:antialiased;font-size:16px}
 h1,h2,h3{color:var(--ink);letter-spacing:-.02em;line-height:1.15}
@@ -145,7 +145,7 @@ header .wrap{position:relative}
   filter:drop-shadow(0 3px 4px rgba(15,23,42,.10));animation:mascot-idle 6s ease-in-out infinite}
 @keyframes mascot-idle{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px)}}
 @media(min-width:1120px){.mascot{right:-64px;height:212px}}
-@media(max-width:760px){.mascot{top:-74px;right:22px;height:84px}}
+@media(max-width:760px){.mascot{top:-86px;right:22px;height:72px}} /* sits above the availability pill, not on it */
 .sig{width:28px;height:28px;border-radius:50%;vertical-align:middle;margin-right:10px;box-shadow:0 0 0 1px var(--line)}
 @media (prefers-reduced-motion:reduce){.mascot{animation:none}}
 @media print{.mascot,.sig{display:none}}

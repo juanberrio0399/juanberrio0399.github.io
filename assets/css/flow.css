@@ -34,7 +34,7 @@ button.btn{cursor:pointer}
 /* stage: the whole flow on one screen, as a 2D diagram */
 .stage-wrap{max-width:1180px;margin:0 auto;padding:0 24px}
 .stage{position:relative;border-radius:18px;padding:12px 14px 6px;
-  background:linear-gradient(180deg,#f8fbff,#eef5ff);border:1px solid var(--line);box-shadow:0 30px 70px -40px rgba(15,23,42,.35)}
+  background:linear-gradient(180deg,#f8fafc,#f1f5f9);border:1px solid var(--line);box-shadow:0 30px 70px -40px rgba(15,23,42,.35)}
 .stage-hint{margin:10px 4px 0;font-size:12.5px;color:var(--mut);text-align:center}
 
 /* live counters */
@@ -59,7 +59,7 @@ button.btn{cursor:pointer}
 .area{position:relative;margin-top:0}
 #wire{position:absolute;left:0;top:0;overflow:visible}
 .rail{fill:none;stroke:#d3deed;stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
-.rail-flow{fill:none;stroke:#1d4ed8;stroke-opacity:.45;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+.rail-flow{fill:none;stroke:var(--accent);stroke-opacity:.45;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
   stroke-dasharray:2 12;animation:dash .7s linear infinite}
 @keyframes dash{to{stroke-dashoffset:-14}}
 .rej-line{stroke:#fca5a5;stroke-width:1.5;stroke-dasharray:3 4}
@@ -78,7 +78,7 @@ button.nd{cursor:pointer}
 .nd .t .mono{font-size:11.5px;color:var(--mut)}
 .nd .t small{margin-top:4px;font-size:11.5px;font-weight:600;color:#15803d;background:#ecfdf3;border-radius:999px;
   padding:2px 9px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.nd.st:hover .c,.nd.on .c{box-shadow:0 0 0 5px rgba(29,78,216,.16),0 8px 18px -10px rgba(15,23,42,.5)}
+.nd.st:hover .c,.nd.on .c{box-shadow:0 0 0 5px rgba(21,128,61,.16),0 8px 18px -10px rgba(15,23,42,.5)}
 .nd.on .t b{color:var(--accent)}
 .nd.end .c{border-radius:14px;background:var(--ink);border-color:var(--ink);color:#fff}
 .nd.end.out .c{background:#15803d;border-color:#15803d}
@@ -135,7 +135,7 @@ button.nd{cursor:pointer}
 .ln{padding:5px 9px;border-radius:7px;color:var(--ink);white-space:pre-wrap;word-break:break-word}
 .ln.bad{background:#fef2f2;color:#b91c1c}
 .ln.new{background:#ecfdf3;color:#166534}
-.ln.hi{background:#eff6ff;color:#1d4ed8}
+.ln.hi{background:var(--accent-soft);color:var(--accent)}
 .dv-kv{display:flex;flex-direction:column;gap:8px}
 .dv-kv div{display:flex;justify-content:space-between;gap:14px;align-items:baseline;border-bottom:1px dashed var(--line);padding-bottom:6px}
 .dv-kv div:last-child{border-bottom:none;padding-bottom:0}
@@ -164,7 +164,7 @@ button.nd{cursor:pointer}
 .bars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:170px;margin-top:8px}
 .bar{display:flex;flex-direction:column;align-items:center;height:100%;gap:4px;min-width:0}
 .track{flex:1;width:100%;display:flex;align-items:flex-end;min-height:0}
-.bar i{display:block;width:100%;background:linear-gradient(180deg,#38bdf8,#1d4ed8);border-radius:6px 6px 2px 2px;min-height:2px}
+.bar i{display:block;width:100%;background:linear-gradient(180deg,#22C55E,#15803D);border-radius:6px 6px 2px 2px;min-height:2px}
 .bar em{font-style:normal;font-size:11px;color:var(--mut);font-variant-numeric:tabular-nums;height:14px}
 .bar span{font-size:11.5px;color:var(--mut)}
 .mini{width:100%;border-collapse:collapse;font-size:13.5px}

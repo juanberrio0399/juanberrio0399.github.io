@@ -3,6 +3,7 @@
 Usage:  python brand/og/og_image.py            -> writes og-image.png at the repo root
         python brand/og/og_image.py out.png    -> writes somewhere else
 
+Needs Pillow >= 10.1 (ImageFont.load_default with a size, Image.Quantize and Image.Dither).
 Fonts: Inter if it is installed, otherwise Segoe UI (Windows), otherwise DejaVu (Linux).
 Edit the texts below and run it again; the image keeps the brand palette from brand/README.md.
 """
@@ -26,13 +27,15 @@ DISPONIBLE = "Open to remote Data & Analytics roles"
 PIE = "juanberrio0399.github.io  ·  Bogotá, Colombia (Remote · GMT-5)"
 
 FUENTES = {
-    "bold": ["Inter-Bold.ttf", "Inter_18pt-Bold.ttf", "segoeuib.ttf", "DejaVuSans-Bold.ttf"],
-    "semi": ["Inter-SemiBold.ttf", "Inter_18pt-SemiBold.ttf", "seguisb.ttf", "DejaVuSans-Bold.ttf"],
-    "reg": ["Inter-Regular.ttf", "Inter_18pt-Regular.ttf", "segoeui.ttf", "DejaVuSans.ttf"],
+    "bold": ["Inter-Bold.ttf", "Inter-Bold.otf", "Inter_18pt-Bold.ttf", "segoeuib.ttf", "DejaVuSans-Bold.ttf"],
+    "semi": ["Inter-SemiBold.ttf", "Inter-SemiBold.otf", "Inter_18pt-SemiBold.ttf", "seguisb.ttf", "DejaVuSans-Bold.ttf"],
+    "reg": ["Inter-Regular.ttf", "Inter-Regular.otf", "Inter_18pt-Regular.ttf", "segoeui.ttf", "DejaVuSans.ttf"],
     "mono": ["JetBrainsMono-Regular.ttf", "consola.ttf", "DejaVuSansMono.ttf"],
 }
 CARPETAS = [Path("C:/Windows/Fonts"), Path.home() / "AppData/Local/Microsoft/Windows/Fonts",
-            Path("/usr/share/fonts/truetype/dejavu"), Path("/usr/share/fonts/truetype/inter")]
+            Path("/Library/Fonts"), Path.home() / "Library/Fonts",  # macOS
+            Path("/usr/share/fonts/truetype/dejavu"), Path("/usr/share/fonts/truetype/inter"),
+            Path("/usr/share/fonts/opentype/inter")]
 
 
 def fuente(tipo, tam):
@@ -125,6 +128,9 @@ def generar(salida):
     if Path(salida).stat().st_size > 150 * 1024:  # social previews should stay light: fall back to 256 colors
         im.quantize(colors=256, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.FLOYDSTEINBERG) \
             .save(salida, optimize=True)
+        if Path(salida).stat().st_size > 150 * 1024:
+            print(f"error: {salida} weighs {Path(salida).stat().st_size // 1024} KB even with 256 colors (limit 150 KB)")
+            sys.exit(1)
     print(f"{salida}  ({Path(salida).stat().st_size // 1024} KB)")
 
 
